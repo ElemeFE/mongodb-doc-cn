@@ -12,9 +12,9 @@ On this page
 
 The[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell is an interactive JavaScript interface to MongoDB. You can use the[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell to query and update data as well as perform administrative operations.
 
-The[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell is a component of the[MongoDB distributions](http://www.mongodb.org/downloads). Once you have[installed and have started MongoDB](https://docs.mongodb.com/manual/installation/), connect the[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell to your running MongoDB instance.
+The[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell is a component of the [MongoDB distributions](http://www.mongodb.org/downloads). Once you have [installed and have started MongoDB](https://docs.mongodb.com/manual/installation/), connect the[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell to your running MongoDB instance.
 
-Most examples in the[MongoDB Manual](https://docs.mongodb.com/manual/)use the[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell; however, many[drivers](https://docs.mongodb.com/manual/applications/drivers/)provide similar interfaces to MongoDB.
+Most examples in the [MongoDB Manual](https://docs.mongodb.com/manual/) use the[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell; however, many [drivers](https://docs.mongodb.com/manual/applications/drivers/) provide similar interfaces to MongoDB.
 
 ## Start the`mongo`Shell
 
