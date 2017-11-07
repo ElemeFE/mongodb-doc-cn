@@ -199,20 +199,20 @@ The representation for the JavaScript/BSON undefined type.
 
 You_cannot_use`undefined`in query documents. Consider the following document inserted into the`people`collection:
 
-```
+```js
 db.people.insert( { name : "Sally", age : undefined } )
 ```
 
 The following queries return an error:
 
-```
+```js
 db.people.find( { age : undefined } )
 db.people.find( { age : { $gte : undefined } } )
 ```
 
 However, you can query for undefined values using[`$type`](https://docs.mongodb.com/manual/reference/operator/query/type/#op._S_type), as in:
 
-```
+```js
 db.people.find( { age : { $type : 6 } } )
 ```
 
@@ -258,14 +258,14 @@ New in version 2.6.
 
 For example, the following commands insert`9223372036854775807`as a`NumberLong`with and without quotation marks around the integer value:
 
-```
+```js
 db.json.insert( { longQuoted : NumberLong("9223372036854775807") } )
 db.json.insert( { longUnQuoted : NumberLong(9223372036854775807) } )
 ```
 
 When you retrieve the documents, the value of`longUnQuoted`has changed, while`longQuoted`retains its accuracy:
 
-```
+```js
 db.json.find()
 { "_id" : ObjectId("54ee1f2d33335326d70987df"), "longQuoted" : NumberLong("9223372036854775807") }
 { "_id" : ObjectId("54ee1f7433335326d70987e0"), "longUnQuoted" : NumberLong("-9223372036854775808") }
@@ -287,14 +287,14 @@ New in version 3.4.
 
 For example, the following commands insert`123.40`as a`NumberDecimal`with and without quotation marks around the value:
 
-```
+```js
 db.json.insert( { decimalQuoted : NumberDecimal("123.40") } )
 db.json.insert( { decimalUnQuoted : NumberDecimal(123.40) } )
 ```
 
 When you retrieve the documents, the value of`decimalUnQuoted`has changed, while`decimalQuoted`retains its specified precision:
 
-```
+```js
 db.json.find()
 { "_id" : ObjectId("596f88b7b613bb04f80a1ea9"), "decimalQuoted" : NumberDecimal("123.40") }
 { "_id" : ObjectId("596f88c9b613bb04f80a1eaa"), "decimalUnQuoted" : NumberDecimal("123.400000000000") }
