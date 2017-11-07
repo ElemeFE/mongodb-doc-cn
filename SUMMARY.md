@@ -23,13 +23,14 @@
 * [安全](security/README.md)
   * checklist
 * [Replication](replication/README.md)
-  * [成员](replication/member/README.md)
+  * [Members](replication/member/README.md)
     * [主节点](replication/member/primary.md)
     * 从节点
       * [优先节点](replication/member/secondary/priority.md)
       * [隐藏节点](replication/member/secondary/hidden.md)
       * [延迟节点](replication/member/secondary/delayed.md)
     * [仲裁节点](replication/member/arbiter.md)
+  * [Oplog](replication/op-log.md)
 * [Sharding](sharding/README.md)
 * FAQ
   * [MongoDB 基本问题](faq/fundamentals.md)
