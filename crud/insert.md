@@ -2,16 +2,10 @@
 
 This page provides examples of insert operations in MongoDB.
 
-CREATING A COLLECTION
-
-If the collection does not currently exist, insert operations will create the collection.
-
-  
-This page provides examples of insert operations in MongoDB.
-
-CREATING A COLLECTION
-
-If the collection does not currently exist, insert operations will create the collection.
+> CREATING A COLLECTION
+>
+> If the collection does not currently exist, insert operations will create the collection.
+>
 
 ## Insert a Single Document
 
@@ -20,8 +14,6 @@ New in version 3.2.
 [Collection.insertOne\(\)](http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#insertOne)inserts a_single_[document](https://docs.mongodb.com/manual/core/document/#bson-document-format)into a collection.
 
 The following example inserts a new document into the`inventory`collection. If the document does not specify an`_id`field, the Node.js driver adds the`_id`field with an ObjectId value to the new document. See[Insert Behavior](https://docs.mongodb.com/manual/tutorial/insert-documents/#write-op-insert-behavior).
-
-Copy
 
 ```
 db
@@ -77,8 +69,6 @@ result
 
 To retrieve the document that you just inserted,[query the collection](https://docs.mongodb.com/manual/core/document/#document-query-filter):
 
-Copy
-
 ```
 var
 cursor
@@ -105,8 +95,6 @@ New in version 3.2.
 [Collection.insertMany\(\)](http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#insertMany)can insert_multiple_[documents](https://docs.mongodb.com/manual/core/document/#bson-document-format)into a collection. Pass an array of documents to the method.
 
 The following example inserts three new documents into the`inventory`collection. If the documents do not specify an`_id`field, the Node.js driver adds the`_id`field with an ObjectId value to each document. See[Insert Behavior](https://docs.mongodb.com/manual/tutorial/insert-documents/#write-op-insert-behavior).
-
-Copy
 
 ```
 db
@@ -224,8 +212,6 @@ result
 [insertMany\(\)](http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#insertMany)returns a promise that provides a`result`. The`result.insertedIds`field contains an array with the`_id`of each newly inserted document.
 
 To retrieve the inserted documents,[query the collection](https://docs.mongodb.com/manual/tutorial/query-documents/#read-operations-query-document):
-
-Copy
 
 ```
 var
