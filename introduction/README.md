@@ -1,9 +1,9 @@
 # MongoDB 简介
 
-On this page
+本页索引：
 
 * [Document Database](https://docs.mongodb.com/manual/introduction/#document-database)
-* [Key Features](https://docs.mongodb.com/manual/introduction/#key-features)
+* [关键特性 Features](https://docs.mongodb.com/manual/introduction/#key-features)
 
 MongoDB is an open-source document database that provides high performance, high availability, and automatic scaling.
 
