@@ -1,54 +1,54 @@
-# The`mongo`Shell
+# `mongo` Shell 工具
 
-On this page
+本页索引:
 
-* [Introduction](https://docs.mongodb.com/manual/mongo/#introduction)
-* [Start the`mongo`Shell](https://docs.mongodb.com/manual/mongo/#start-the-mongo-shell)
-* [Working with the`mongo`Shell](https://docs.mongodb.com/manual/mongo/#working-with-the-mongo-shell)
-* [Tab Completion and Other Keyboard Shortcuts](https://docs.mongodb.com/manual/mongo/#tab-completion-and-other-keyboard-shortcuts)
-* [Exit the Shell](https://docs.mongodb.com/manual/mongo/#exit-the-shell)
+* [介绍](#介绍)
+* [启动 `mongo`Shell](#启动-mongo-shell)
+* [使用 `mongo` Shell 工作](#使用mongo-shell-工作)
+* [Tab 补全及其他快捷键](#tab-补全及其他快捷键)
+* [Exit](#exit)
 
-## Introduction
+## 介绍
 
-The[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell is an interactive JavaScript interface to MongoDB. You can use the[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell to query and update data as well as perform administrative operations.
+[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo) shell 是一个基于 JavaScript 语言的 MongoDB 交互工具. 你可以使用 [`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell 来查询和更新数据也可以执行管理员操作.
 
-The[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell is a component of the [MongoDB distributions](http://www.mongodb.org/downloads). Once you have [installed and have started MongoDB](https://docs.mongodb.com/manual/installation/), connect the[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell to your running MongoDB instance.
+同时 [`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo) shell 也是 [MongoDB distributions](http://www.mongodb.org/downloads) 的一个组件. 只要你 [安装并且启动了 MongoDB](https://docs.mongodb.com/manual/installation/), 就可以通过 [`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell 连接到你运行中的 MongoDB 实例.
 
-Most examples in the [MongoDB Manual](https://docs.mongodb.com/manual/) use the[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell; however, many [drivers](https://docs.mongodb.com/manual/applications/drivers/) provide similar interfaces to MongoDB.
+在 [MongoDB 手册](https://elemefe.gitbooks.io/mongodb/content/) 中的大部分例子都是使用 [`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo) shell; 此外, 许多[驱动](https://docs.mongodb.com/manual/applications/drivers/) 也提供了相似的工具.
 
-## Start the`mongo`Shell
+## 启动 `mongo` Shell
 
-IMPORTANT
+**重要**
 
-Ensure that MongoDB is running before attempting to start the[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell.
+在试图启用 [`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell 之前确保 MongoDB 是运行的.
 
-To start the[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell and connect to your[MongoDB](https://docs.mongodb.com/manual/reference/program/mongod/)instance running on**localhost**with**default port**:
+要启动 [`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell 并连接上运行在 **localhost** 和 **默认端口** 的 [MongoDB](https://docs.mongodb.com/manual/reference/program/mongod/) 实例:
 
-1. At a prompt in a terminal window \(or a command prompt for Windows\), go to your`<mongodbinstallationdir>`:
+1. 打开命令行工具, 找到你 `<存放mongodb工具的目录>`:
 
    ```bash
-   cd <mongodb installation dir>
+   cd <存放mongodb工具的目录>
    ```
 
-2. Type`./bin/mongo`to start[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo):
+2. 输入`./bin/mongo` 来启动 [`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo):
 
    ```bash
    ./bin/mongo
    ```
 
-   If you have added the`<mongodbinstallationdir>/bin`to the`PATH`environment variable, you can just type`mongo`instead of`./bin/mongo`.
+   如果你已经把 `<存放mongodb工具的目录>/bin` 添加到 `PATH` 环境变量中, 就可以直接输入 `mongo` 不用输入 `./bin/mongo`.
 
-### Options
+### 选项
 
-When you run[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)without any arguments, the[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell will attempt to connect to the MongoDB instance running on the`localhost`interface on port`27017`. To specify a different host or port number, as well as other options, see[examples of starting up mongo](https://docs.mongodb.com/manual/reference/program/mongo/#mongo-usage-examples)and[mongo reference](https://docs.mongodb.com/manual/reference/program/mongo/)which provides details on the available options.
+当你不加任何参数运行 [`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo), 那么 [`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell 将会试图连接运行在 `localhost` 且端口是 `27017` 的 MongoDB 实例. 要指定一个其他 host 或者 port, 或者其他选项, 参见[启动 mongo 实例](https://docs.mongodb.com/manual/reference/program/mongo/#mongo-usage-examples)和[mongo 引用](https://docs.mongodb.com/manual/reference/program/mongo/), 其中提供了详细的可用选项.
 
-### `.mongorc.js`File
+### `.mongorc.js` 文件
 
-When starting,[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)checks the user’s[`HOME`](https://docs.mongodb.com/manual/reference/program/mongo/#envvar-HOME)directory for a JavaScript file named[.mongorc.js](https://docs.mongodb.com/manual/reference/program/mongo/#mongo-mongorc-file). If found,[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)interprets the content of`.mongorc.js`before displaying the prompt for the first time. If you use the shell to evaluate a JavaScript file or expression, either by using the`--eval`option on the command line or by specifying[a .js file to mongo](https://docs.mongodb.com/manual/reference/program/mongo/#mongo-shell-file),[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)will read the`.mongorc.js`file\_after\_the JavaScript has finished processing. You can prevent`.mongorc.js`from being loaded by using the[`--norc`](https://docs.mongodb.com/manual/reference/program/mongo/#cmdoption-norc)option.
+在启动时, [`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo) 检查用户的 [`HOME`](https://docs.mongodb.com/manual/reference/program/mongo/#envvar-HOME) 目录下一个名为 [.mongorc.js](https://docs.mongodb.com/manual/reference/program/mongo/#mongo-mongorc-file) 的 JavaScript 文件. 如果文件存在, [`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo) 会在显示提示符之前第一时间加载 `.mongorc.js` 的内容. 当你使用 shell 来运行一个 JavaScript 文件或者表达式, 以及在命令行使用 `--eval` 选项或者指定一个 [.js 文件让 mongo 运行](https://docs.mongodb.com/manual/reference/program/mongo/#mongo-shell-file)时, [`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo) 会在 JavaScript 执行结束后读取 `.mongorc.js` 文件. 你也可以通过使用 [`--norc`](https://docs.mongodb.com/manual/reference/program/mongo/#cmdoption-norc) 选项阻止 `.mongorc.js` 被加载.
 
-## Working with the`mongo`Shell
+## 使用`mongo` Shell 工作
 
-To display the database you are using, type`db`:
+要查看当前使用的数据库库, 你可以输入 `db`:
 
 ```
 db
@@ -133,7 +133,7 @@ You can exit the line continuation mode if you enter two blank lines, as in the 
 >
 ```
 
-## Tab Completion and Other Keyboard Shortcuts
+## Tab 补全及其他快捷键
 
 The[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell supports keyboard shortcuts. For example,
 
@@ -149,7 +149,7 @@ The[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)
 
 For a full list of the shortcuts, see[Shell Keyboard Shortcuts](https://docs.mongodb.com/manual/reference/program/mongo/#mongo-keyboard-shortcuts)
 
-## Exit the Shell
+## Exit
 
 To exit the shell, type`quit()`or use the`<Ctrl-C>`shortcut.
 
