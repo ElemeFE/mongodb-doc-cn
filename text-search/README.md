@@ -20,7 +20,7 @@ This example demonstrates how to build a text index and use it to find coffee sh
 
 Create a collection`stores`with the following documents:
 
-```
+```js
 db.stores.insert(
    [
      { _id: 1, name: "Java Hut", description: "Coffee and cakes" },
@@ -40,7 +40,7 @@ To perform text search queries, you must have a`text`index on your collection. A
 
 For example you can run the following in a[`mongo`](https://docs.mongodb.com/manual/reference/program/mongo/#bin.mongo)shell to allow text search over the`name`and`description`fields:db
 
-```
+```js
 db.stores.createIndex( { name: "text", description: "text" } )
 ```
 
@@ -52,7 +52,7 @@ Use the[`$text`](https://docs.mongodb.com/manual/reference/operator/query/text/#
 
 For example, you could use the following query to find all stores containing any terms from the list “coffee”, “shop”, and “java”:
 
-```
+```js
 db.stores.find( { $text: { $search: "java coffee shop" } } )
 ```
 
@@ -60,7 +60,7 @@ db.stores.find( { $text: { $search: "java coffee shop" } } )
 
 You can also search for exact phrases by wrapping them in double-quotes. For example, the following will find all documents containing “java” or “coffee shop”:
 
-```
+```js
 db.stores.find( { $text: { $search: "java \"coffee shop\"" } } )
 ```
 
@@ -68,7 +68,7 @@ db.stores.find( { $text: { $search: "java \"coffee shop\"" } } )
 
 To exclude a word, you can prepend a “`-`” character. For example, to find all stores containing “java” or “shop” but not “coffee”, use the following:db
 
-```
+```js
 db.stores.find( { $text: { $search: "java shop -coffee" } } )
 ```
 
@@ -78,7 +78,7 @@ MongoDB will return its results in unsorted order by default. However, text sear
 
 To sort the results in order of relevance score, you must explicitly project the[`$meta`](https://docs.mongodb.com/manual/reference/operator/projection/meta/#proj._S_meta)`textScore`field and sort on it:
 
-```
+```js
 db.stores.find(
    { $text: { $search: "java coffee shop" } },
    { score: { $meta: "textScore" } }
