@@ -1,4 +1,4 @@
-# Introduction to MongoDB
+# MongoDB 简介
 
 On this page
 
@@ -50,7 +50,7 @@ A[replica set](https://docs.mongodb.com/manual/replication/)is a group of MongoD
 
 ### Horizontal Scalability
 
-MongoDB provides horizontal scalability as part of its_core_functionality:
+MongoDB provides horizontal scalability as part of its\_core\_functionality:
 
 * [Sharding](https://docs.mongodb.com/manual/sharding/#sharding-introduction)
   distributes data across a cluster of machines.
