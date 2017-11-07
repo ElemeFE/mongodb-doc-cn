@@ -139,7 +139,7 @@ For details on specific commands, including syntax and examples, click on the sp
 | [`replSetInitiate`](https://docs.mongodb.com/manual/reference/command/replSetInitiate/#dbcmd.replSetInitiate) | Initializes a new replica set. |
 | [`replSetMaintenance`](https://docs.mongodb.com/manual/reference/command/replSetMaintenance/#dbcmd.replSetMaintenance) | Enables or disables a maintenance mode, which puts a[secondary](https://docs.mongodb.com/manual/reference/glossary/#term-secondary)node in a`RECOVERING`state. |
 | [`replSetReconfig`](https://docs.mongodb.com/manual/reference/command/replSetReconfig/#dbcmd.replSetReconfig) | Applies a new configuration to an existing replica set. |
-| [`replSetStepDown`](https://docs.mongodb.com/manual/reference/command/replSetStepDown/#dbcmd.replSetStepDown) | Forces the current[primary](https://docs.mongodb.com/manual/reference/glossary/#term-primary)to_step down_and become a[secondary](https://docs.mongodb.com/manual/reference/glossary/#term-secondary), forcing an election. |
+| [`replSetStepDown`](https://docs.mongodb.com/manual/reference/command/replSetStepDown/#dbcmd.replSetStepDown) | Forces the current[primary](https://docs.mongodb.com/manual/reference/glossary/#term-primary)to\_step down\_and become a[secondary](https://docs.mongodb.com/manual/reference/glossary/#term-secondary), forcing an election. |
 | [`replSetSyncFrom`](https://docs.mongodb.com/manual/reference/command/replSetSyncFrom/#dbcmd.replSetSyncFrom) | Explicitly override the default logic for selecting a member to replicate from. |
 | [`resync`](https://docs.mongodb.com/manual/reference/command/resync/#dbcmd.resync) | Forces a[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)to re-synchronize from the[master](https://docs.mongodb.com/manual/reference/glossary/#term-master). For master-slave replication only. |
 
@@ -257,6 +257,5 @@ SEE ALSO
 | :--- | :--- |
 | [`logApplicationMessage`](https://docs.mongodb.com/manual/reference/command/logApplicationMessage/#dbcmd.logApplicationMessage) | Posts a custom message to the audit log. |
 
-  
 
 
