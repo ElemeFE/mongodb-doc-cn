@@ -25,7 +25,10 @@
 * [Replication](replication/README.md)
   * [成员](replication/member/README.md)
     * [主节点](replication/member/primary.md)
-    * [从节点](replication/member/secondary.md)
+    * 从节点
+      * [优先节点](replication/member/secondary/priority.md)
+      * [隐藏节点](replication/member/secondary/hidden.md)
+      * [延迟节点](replication/member/secondary/delayed.md)
     * [仲裁节点](replication/member/arbiter.md)
 * [Sharding](sharding/README.md)
 * FAQ
