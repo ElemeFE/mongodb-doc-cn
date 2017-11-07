@@ -9,3 +9,5 @@
   * [插入](crud/insert.md)
 * [聚合](aggregation/README.md)
   * [Pipeline](aggregation/pipeline.md)
+* [文本搜索](text-search/README.md)
+  * [文本索引](text-search/indexes.md)
