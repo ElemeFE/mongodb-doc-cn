@@ -24,4 +24,5 @@
   * checklist
 * [Replication](replication.md)
 * [Sharding](sharding.md)
-* [FAQ](faq/README.md)
+* FAQ
+  * [MongoDB 基本问题](faq/fundamentals.md)
