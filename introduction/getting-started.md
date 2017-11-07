@@ -1,36 +1,34 @@
 # Getting Started
 
-[MongoDB Atlas](https://cloud.mongodb.com/?jmp=docs)is a cloud-hosted service for provisioning, running, monitoring, and maintaining MongoDB deployments. It is a fast, easy, and free way to get started with MongoDB. To install and run MongoDB locally, see[Install MongoDB](https://docs.mongodb.com/manual/installation/#tutorial-installation).
+[MongoDB Atlas](https://cloud.mongodb.com/?jmp=docs) 是一个定制, 运行, 监控以及维护 MongoDB 的云端服务. 它是一个快速, 简单并且免费的使用 MongoDB 的途径. 如果想在本地安装运行 MongoDB, 参见[安装 MongoDB](https://docs.mongodb.com/manual/installation/#tutorial-installation).
 
-The following tutorial uses the[MongoDB Node.js Driver](http://mongodb.github.io/node-mongodb-native/2.2/)to connect to an Atlas free-tier cluster, then perform insert and query operations.
+接下来的教程使用 [MongoDB Node.js 驱动](http://mongodb.github.io/node-mongodb-native/2.2/) 来连接一个免费的 Atlas 集群, 然后执行插入和查询操作.
 
-To learn more about the MongoDB query language and other MongoDB fundamentals, sign up for[M001: MongoDB Basics](https://university.mongodb.com/courses/M001/about).
+想学习更多关于 MongoDB 查询语句一起其他 MongoDB 的基础支持, 可以注册 [M001: MongoDB Basics](https://university.mongodb.com/courses/M001/about) 课程.
 
-## Create an Atlas user account.
+## 1.创建一个 Atlas 账户.
 
-To get started with[MongoDB Atlas](https://cloud.mongodb.com/?jmp=docs), create your user account and log in to Atlas.
+想要使用 [MongoDB Atlas](https://cloud.mongodb.com/?jmp=docs), 请先创建你的账户并登陆到 Atlas.
 
-## Create an Atlas Group.
+## 2.创建一个 Atlas Group.
 
-Choose a name for your group.
+为你的 group 取个名字.
 
 ![](https://docs.mongodb.com/manual/_images/atlas-create-group.png "Screenshot of group creation prompt.")
 
-Groups manage related MongoDB deployments. To create additional Atlas groups, click on your user name in the upper-right hand corner and selectMy Groups. Click theAdd Groupbutton.
+你可以通过 gourp 来管理相关联的 MongoDB 实例. 要创建另外的 Atlas group, 请点击左上角的用户名然后选择 **My Groups**. 点击 Add Group 按钮即可.
 
-3
+## 3.创建一个集群.
 
-## Create a cluster.
+在 Atlas 中部署一个 MongoDB 实例或者 “clusters”, 可以是一个 [replica set](https://docs.mongodb.com/manual/reference/glossary/#term-replica-set) 或者 [sharded cluster](https://docs.mongodb.com/manual/reference/glossary/#term-sharded-cluster).
 
-MongoDB deployments, or “clusters” in Atlas, can be either a[replica set](https://docs.mongodb.com/manual/reference/glossary/#term-replica-set)or a[sharded cluster](https://docs.mongodb.com/manual/reference/glossary/#term-sharded-cluster).
-
-To create a cluster, go to theClustersview and click theAdd New ClusterorBuild a New Clusterbutton.
+要创建集群, 进入 **Clusters** 界面并点击 **Add New Cluster** 或者 **Build a New Cluster** 按钮.
 
 ![](https://docs.mongodb.com/manual/_images/atlas-create-cluster.png "Screenshot of cluster config options during creation.")
 
-1. Enter aCluster Name.
+1. 输入 Cluster Name.
 
-2. Click theSelectbutton forInstance Size`M0`for Atlas Free Tier.
+2. Click the Select button for Instance Size`M0`for Atlas Free Tier.
 
 3. Enter aUsernameandPassword.
 
