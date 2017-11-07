@@ -182,7 +182,7 @@ var cursor = db.collection('inventory').find({
 
 ## 下一步
 
-Once you complete the Getting Started Guide, you may find the following course and topics useful:
+当你阅读完 Getting Started 概览之后, 你可以通过下列课程和主题获得更多帮助:
 
 To learn more about the MongoDB query language and other MongoDB fundamentals, sign up for[M001: MongoDB Basics](https://university.mongodb.com/courses/M001/about).
 
