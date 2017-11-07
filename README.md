@@ -1,6 +1,6 @@
-# Mongodb 手册
+# Mongodb 中文手册
 
-Mongodb 官方手册 v3.4 翻译。
+Mongodb 官方手册 v3.4 中文版翻译。
 
 ## Join us
 
