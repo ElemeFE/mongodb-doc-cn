@@ -444,7 +444,6 @@ struct {
     int32     numberReturned; // number of documents in the reply
     document* documents;      // documents
 }
-
 ```
 
 | Field | Description |
@@ -468,25 +467,12 @@ The`OP_COMMANDREPLY`is a wire protocol message used internally for replying to i
 
 The format of an`OP_COMMANDREPLY`is:
 
-```
-struct 
-{
-
-   MsgHeader header
-;
-       // A standard wire protocol header
-   document metadata
-;
-      // A BSON document containing any required metadata
-   document commandReply
-;
-  // A BSON document containing the 
-command
- reply
-   document outputDocs
-;
-    // A variable number of BSON documents
-
+```c
+struct {
+   MsgHeader header;       // A standard wire protocol header
+   document metadata;      // A BSON document containing any required metadata
+   document commandReply;  // A BSON document containing the command reply
+   document outputDocs;    // A variable number of BSON documents
 }
 ```
 
