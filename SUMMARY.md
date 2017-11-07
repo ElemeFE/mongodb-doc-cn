@@ -58,5 +58,5 @@
   * [MongoDB 写协议](reference/write-protocol.md)
   * 日志消息
   * 退出码和状态
-  * 术语表
+  * [术语表](reference/glossary.md)
   * 默认 MongoDB 端口
