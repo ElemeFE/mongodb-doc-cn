@@ -32,7 +32,7 @@ Changed in version 3.2:MongoDB can now use the[WiredTiger storage engine](https:
 
 #### x86\_64
 
-| Platform | 3.4 Community  | & |  Enterprise | 3.2 Community  | & |  Enterprise | 3.0 Community  | & |  Enterprise |
+| Platform | 3.4 Community | & | Enterprise | 3.2 Community | & | Enterprise | 3.0 Community | & | Enterprise |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 |  |  |  |  |  |  | Amazon Linux 2013.03 and later | ✓ | ✓ | ✓ |
 |  |  |  |  |  |  | Debian 7 | ✓ | ✓ | ✓ |
@@ -51,7 +51,7 @@ Changed in version 3.2:MongoDB can now use the[WiredTiger storage engine](https:
 
 #### ARM64
 
-| Platform | 3.4 Community  | & |  Enterprise |
+| Platform | 3.4 Community | & | Enterprise |
 | :--- | :--- | :--- | :--- |
 |  |  | Ubuntu 16.04 | ✓ |
 
@@ -142,7 +142,7 @@ SEE ALSO
 
 ### Journaling
 
-MongoDB uses_write ahead logging_to an on-disk[journal](https://docs.mongodb.com/manual/reference/glossary/#term-journal). Journaling guarantees that MongoDB can quickly recover[write operations](https://docs.mongodb.com/manual/crud/)that were written to the journal but not written to data files in cases where[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)terminated due to a crash or other serious failure.
+MongoDB uses\_write ahead logging\_to an on-disk[journal](https://docs.mongodb.com/manual/reference/glossary/#term-journal). Journaling guarantees that MongoDB can quickly recover[write operations](https://docs.mongodb.com/manual/crud/)that were written to the journal but not written to data files in cases where[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)terminated due to a crash or other serious failure.
 
 Leave journaling enabled in order to ensure that[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)will be able to recover its data files and keep the data files in a valid state following a crash. See[Journaling](https://docs.mongodb.com/manual/core/journaling/)for more information.
 
@@ -150,9 +150,9 @@ Leave journaling enabled in order to ensure that[`mongod`](https://docs.mongodb.
 
 New in version 3.2.
 
-If using[`"majority"`](https://docs.mongodb.com/manual/reference/read-concern/#readconcern."majority")or[`"linearizable"`](https://docs.mongodb.com/manual/reference/read-concern/#readconcern."linearizable")read concern for read operations, use[`{w:"majority"}`](https://docs.mongodb.com/manual/reference/write-concern/#writeconcern."majority")write concern for write operations on the primary to ensure that a single thread can read its own writes.
+If using\[`"majority"`\]\([https://docs.mongodb.com/manual/reference/read-concern/\#readconcern."majority"\)or\[\`"linearizable"\`\]\(https://docs.mongodb.com/manual/reference/read-concern/\#readconcern."linearizable"\)read](https://docs.mongodb.com/manual/reference/read-concern/#readconcern."majority"%29or[`"linearizable"`]%28https://docs.mongodb.com/manual/reference/read-concern/#readconcern."linearizable"%29read) concern for read operations, use\[`{w:"majority"}`\]\([https://docs.mongodb.com/manual/reference/write-concern/\#writeconcern."majority"\)write](https://docs.mongodb.com/manual/reference/write-concern/#writeconcern."majority"%29write) concern for write operations on the primary to ensure that a single thread can read its own writes.
 
-To use[read concern](https://docs.mongodb.com/manual/reference/glossary/#term-read-concern)level of[`"majority"`](https://docs.mongodb.com/manual/reference/read-concern/#readconcern."majority"),
+To use[read concern](https://docs.mongodb.com/manual/reference/glossary/#term-read-concern)level of\[`"majority"`\]\([https://docs.mongodb.com/manual/reference/read-concern/\#readconcern."majority](https://docs.mongodb.com/manual/reference/read-concern/#readconcern."majority)"\),
 
 * you must start the
   [`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)
@@ -171,7 +171,7 @@ To use[read concern](https://docs.mongodb.com/manual/reference/glossary/#term-re
 
 ### Write Concern
 
-[Write concern](https://docs.mongodb.com/manual/reference/write-concern/)describes the level of acknowledgement requested from MongoDB for write operations. The level of the write concerns affects how quickly the write operation returns. When write operations have a_weak_write concern, they return quickly. With_stronger_write concerns, clients must wait after sending a write operation until MongoDB confirms the write operation at the requested write concern level. With insufficient write concerns, write operations may appear to a client to have succeeded, but may not persist in some cases of server failure.
+[Write concern](https://docs.mongodb.com/manual/reference/write-concern/)describes the level of acknowledgement requested from MongoDB for write operations. The level of the write concerns affects how quickly the write operation returns. When write operations have a\_weak\_write concern, they return quickly. With\_stronger\_write concerns, clients must wait after sending a write operation until MongoDB confirms the write operation at the requested write concern level. With insufficient write concerns, write operations may appear to a client to have succeeded, but may not persist in some cases of server failure.
 
 See the[Write Concern](https://docs.mongodb.com/manual/reference/write-concern/)document for more information about choosing an appropriate write concern level for your deployment.
 
@@ -179,7 +179,7 @@ See the[Write Concern](https://docs.mongodb.com/manual/reference/write-concern/)
 
 ### Use Trusted Networking Environments
 
-Always run MongoDB in a_trusted environment_, with network rules that prevent access from_all_unknown machines, systems, and networks. As with any sensitive system that is dependent on network access, your MongoDB deployment should only be accessible to specific systems that require access, such as application servers, monitoring services, and other MongoDB components.
+Always run MongoDB in a_trusted environment_, with network rules that prevent access from\_all\_unknown machines, systems, and networks. As with any sensitive system that is dependent on network access, your MongoDB deployment should only be accessible to specific systems that require access, such as application servers, monitoring services, and other MongoDB components.
 
 IMPORTANT
 
@@ -263,7 +263,7 @@ To accommodate the additional consumers of RAM, you may have to decrease WiredTi
 
 The default WiredTiger internal cache size value assumes that there is a single[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)instance per machine. If a single machine contains multiple MongoDB instances, then you should decrease the setting to accommodate the other[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)instances.
 
-If you run[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)in a container \(e.g.`lxc`,`cgroups`, Docker, etc.\) that does_not_have access to all of the RAM available in a system, you must set[`storage.wiredTiger.engineConfig.cacheSizeGB`](https://docs.mongodb.com/manual/reference/configuration-options/#storage.wiredTiger.engineConfig.cacheSizeGB)to a value less than the amount of RAM available in the container. The exact amount depends on the other processes running in the container.
+If you run[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)in a container \(e.g.`lxc`,`cgroups`, Docker, etc.\) that does\_not\_have access to all of the RAM available in a system, you must set[`storage.wiredTiger.engineConfig.cacheSizeGB`](https://docs.mongodb.com/manual/reference/configuration-options/#storage.wiredTiger.engineConfig.cacheSizeGB)to a value less than the amount of RAM available in the container. The exact amount depends on the other processes running in the container.
 
 To view statistics on the cache and eviction rate, see the[`wiredTiger.cache`](https://docs.mongodb.com/manual/reference/command/serverStatus/#serverstatus.wiredTiger.cache)field returned from the[`serverStatus`](https://docs.mongodb.com/manual/reference/command/serverStatus/#dbcmd.serverStatus)command.
 
@@ -302,14 +302,13 @@ On Windows, memory interleaving must be enabled through the machine’s BIOS. Co
 
 #### Configuring NUMA on Linux
 
-When running MongoDB on Linux, you should disable_zone reclaim_in the`sysctl`settings using one of the following commands:
+When running MongoDB on Linux, you should disable\_zone reclaim\_in the`sysctl`settings using one of the following commands:
 
 ```
 echo
 0
 |
  sudo tee /proc/sys/vm/zone_reclaim_mode
-
 ```
 
 ```
@@ -376,11 +375,11 @@ Using different storage devices will affect your ability to create snapshot-styl
 
 ##### Scheduling for Virtual or Cloud Hosted Devices
 
-For local block devices attached to a virtual machine instance via the hypervisor or hosted by a cloud hosting provider, the guest operating system should use a_noop_scheduler for best performance. The_noop_scheduler allows the operating system to defer I/O scheduling to the underlying hypervisor.
+For local block devices attached to a virtual machine instance via the hypervisor or hosted by a cloud hosting provider, the guest operating system should use a\_noop\_scheduler for best performance. The\_noop\_scheduler allows the operating system to defer I/O scheduling to the underlying hypervisor.
 
 ##### Scheduling for Physical Servers
 
-For physical servers, the operating system should use a_deadline_scheduler. The_deadline_scheduler caps maximum latency per request and maintains a good disk throughput that is best for disk-intensive database applications.
+For physical servers, the operating system should use a\_deadline\_scheduler. The\_deadline\_scheduler caps maximum latency per request and maintains a good disk throughput that is best for disk-intensive database applications.
 
 ## Architecture
 
@@ -438,7 +437,7 @@ With the[MMAPv1 storage engine](https://docs.mongodb.com/manual/core/mmapv1/#sto
 
 IMPORTANT
 
-MongoDB requires a filesystem that supports`fsync()`_on directories_. For example, HGFS and Virtual Box’s shared folders do_not_support this operation.
+MongoDB requires a filesystem that supports`fsync()`_on directories_. For example, HGFS and Virtual Box’s shared folders do\_not\_support this operation.
 
 #### Recommended Configuration
 
@@ -500,7 +499,6 @@ path to SSL libs
 version
 >
 : no version information available (required by /usr/bin/mongod)
-
 ```
 
 These warnings indicate that the system’s TLS/SSL libraries are different from the TLS/SSL libraries that the[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)was compiled against. Typically these messages do not require intervention; however, you can use the following operations to determine the symbol versions that[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)expects:
@@ -530,7 +528,6 @@ These operations will return output that resembles one the of the following line
 ```
 0000000000000000      DF *UND*       0000000000000000  libssl.so.10 SSL_write
 0000000000000000      DF *UND*       0000000000000000  OPENSSL_1.0.0 SSL_write
-
 ```
 
 The last two strings in this output are the symbol version and symbol name. Compare these values with the values returned by the following operations to detect symbol version mismatches:
@@ -546,7 +543,6 @@ objdump -T
 path to TLS/SSL libs
 >
 /libcrypto.so.1*
-
 ```
 
 This procedure is neither exact nor exhaustive: many symbols used by[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)from the`libcrypto`library do not begin with`CRYPTO_`.
@@ -604,7 +600,6 @@ data file
 >
  failed with error 1 ...
 [DataFileSync] Fatal Assertion 16387
-
 ```
 
 These shut downs do not produce data loss when[`storage.journal.enabled`](https://docs.mongodb.com/manual/reference/configuration-options/#storage.journal.enabled)is set to`true`. You can safely restart[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)at any time following this event.
@@ -623,14 +618,12 @@ You will need to restart[`mongod`](https://docs.mongodb.com/manual/reference/pro
 
   ```
   sysctl net.ipv4.tcp_keepalive_time
-
   ```
 
   Or:
 
   ```
   cat /proc/sys/net/ipv4/tcp_keepalive_time
-
   ```
 
   The value is measured in seconds.
@@ -654,7 +647,6 @@ You will need to restart[`mongod`](https://docs.mongodb.com/manual/reference/pro
   >
   |
    sudo tee /proc/sys/net/ipv4/tcp_keepalive_time
-
   ```
 
   These operations do not persist across system reboots. To persist the setting, add the following line to`/etc/sysctl.conf`:
@@ -692,7 +684,7 @@ You will need to restart[`mongod`](https://docs.mongodb.com/manual/reference/pro
   KeepAliveTime
   ```
 
-  The registry value is not present by default. The system default, used if the value is absent, is 7200000_milliseconds_or`0x6ddd00`in hexadecimal.
+  The registry value is not present by default. The system default, used if the value is absent, is 7200000\_milliseconds\_or`0x6ddd00`in hexadecimal.
 
 * To change the`KeepAliveTime`value, use the following command in an AdministratorCommand Prompt, where`<value>`is expressed in hexadecimal \(e.g. 120000 is`0x1d4c0`\):
 
@@ -736,7 +728,7 @@ You can disable the balloon driver and VMware’s memory overcommitment feature 
 
 When using MongoDB with VMware, ensure that the CPU reservation does not exceed more than 2 virtual CPUs per physical core.
 
-Ensure that virtual machines stay on a specific ESX/ESXi host by setting VMware’s[affinity rules](https://kb.vmware.com/selfservice/microsites/search.do?cmd=displayKC&docType=kc&externalId=1005508&sliceId=1&docTypeID=DT_KB_1_1&dialogID=549881455&stateId=0%200%20549889513). If you must manually migrate a virtual machine to another host and the[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)instance on the virtual machine is the[primary](https://docs.mongodb.com/manual/reference/glossary/#term-primary), you must first[`stepdown`](https://docs.mongodb.com/manual/reference/method/rs.stepDown/#rs.stepDown)the primary and then[`shutdowntheinstance`](https://docs.mongodb.com/manual/reference/method/db.shutdownServer/#db.shutdownServer).
+Ensure that virtual machines stay on a specific ESX/ESXi host by setting VMware’s[affinity rules](https://kb.vmware.com/selfservice/microsites/search.do?cmd=displayKC&docType=kc&externalId=1005508&sliceId=1&docTypeID=DT_KB_1_1&dialogID=549881455&stateId=0 0 549889513). If you must manually migrate a virtual machine to another host and the[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)instance on the virtual machine is the[primary](https://docs.mongodb.com/manual/reference/glossary/#term-primary), you must first[`stepdown`](https://docs.mongodb.com/manual/reference/method/rs.stepDown/#rs.stepDown)the primary and then[`shutdowntheinstance`](https://docs.mongodb.com/manual/reference/method/db.shutdownServer/#db.shutdownServer).
 
 Follow the[networking best practices for vMotion](https://docs.vmware.com/en/VMware-vSphere/6.0/com.vmware.vsphere.vcenterhost.doc/GUID-7DAD15D4-7F41-4913-9F16-567289E22977.html)and the[VMKernel](https://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=2054994). Failure to follow the best practices can result in performance problems and affect[replica set](https://docs.mongodb.com/manual/core/replica-set-high-availability/)and[sharded cluster](https://docs.mongodb.com/manual/tutorial/troubleshoot-sharded-clusters/)high availability mechanisms.
 
