@@ -24,4 +24,4 @@
   * checklist
 * [Replication](replication.md)
 * [Sharding](sharding.md)
-
+* [FAQ](faq/README.md)
