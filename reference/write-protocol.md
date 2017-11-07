@@ -56,27 +56,13 @@ NOTE
 
 In general, each message consists of a standard message header followed by request-specific data. The standard message header is structured as follows:
 
-```
-struct
-MsgHeader
-{
-int32
-messageLength
-;
-// total message size, including this
-int32
-requestID
-;
-// identifier for this message
-int32
-responseTo
-;
-// requestID from the original request
-//   (used in responses from db)
-int32
-opCode
-;
-// request type - see table below
+```c
+struct MsgHeader {
+    int32   messageLength; // total message size, including this
+    int32   requestID;     // identifier for this message
+    int32   responseTo;    // requestID from the original request
+                           //   (used in responses from db)
+    int32   opCode;        // request type - see table below
 }
 ```
 
@@ -126,34 +112,14 @@ You can determine if a message was successful with a getLastError command.
 
 The OP\_UPDATE message is used to update a document in a collection. The format of a OP\_UPDATE message is the following:
 
-```
-struct
-OP_UPDATE
-{
-MsgHeader
-header
-;
-// standard message header
-int32
-ZERO
-;
-// 0 - reserved for future use
-cstring
-fullCollectionName
-;
-// "dbname.collectionname"
-int32
-flags
-;
-// bit vector. see below
-document
-selector
-;
-// the query to select the document
-document
-update
-;
-// specification of the update to perform
+```c
+struct OP_UPDATE {
+    MsgHeader header;             // standard message header
+    int32     ZERO;               // 0 - reserved for future use
+    cstring   fullCollectionName; // "dbname.collectionname"
+    int32     flags;              // bit vector. see below
+    document  selector;           // the query to select the document
+    document  update;             // specification of the update to perform
 }
 ```
 
@@ -172,26 +138,12 @@ There is no response to an OP\_UPDATE message.
 
 The OP\_INSERT message is used to insert one or more documents into a collection. The format of the OP\_INSERT message is
 
-```
-struct
-{
-MsgHeader
-header
-;
-// standard message header
-int32
-flags
-;
-// bit vector - see below
-cstring
-fullCollectionName
-;
-// "dbname.collectionname"
-document
-*
-documents
-;
-// one or more documents to insert into the collection
+```c
+struct {
+    MsgHeader header;             // standard message header
+    int32     flags;              // bit vector - see below
+    cstring   fullCollectionName; // "dbname.collectionname"
+    document* documents;          // one or more documents to insert into the collection
 }
 ```
 
@@ -208,42 +160,17 @@ There is no response to an OP\_INSERT message.
 
 The OP\_QUERY message is used to query the database for documents in a collection. The format of the OP\_QUERY message is:
 
-```
-struct
-OP_QUERY
-{
-MsgHeader
-header
-;
-// standard message header
-int32
-flags
-;
-// bit vector of query options.  See below for details.
-cstring
-fullCollectionName
-;
-// "dbname.collectionname"
-int32
-numberToSkip
-;
-// number of documents to skip
-int32
-numberToReturn
-;
-// number of documents to return
-//  in the first OP_REPLY batch
-document
-query
-;
-// query object.  See below for details.
-[
-document
-returnFieldsSelector
-;
-]
-// Optional. Selector indicating the fields
-//  to return.  See below for details.
+```c
+struct OP_QUERY {
+    MsgHeader header;                 // standard message header
+    int32     flags;                  // bit vector of query options.  See below for details.
+    cstring   fullCollectionName ;    // "dbname.collectionname"
+    int32     numberToSkip;           // number of documents to skip
+    int32     numberToReturn;         // number of documents to return
+                                      //  in the first OP_REPLY batch
+    document  query;                  // query object.  See below for details.
+  [ document  returnFieldsSelector; ] // Optional. Selector indicating the fields
+                                      //  to return.  See below for details.
 }
 ```
 
@@ -263,29 +190,13 @@ The database will respond to an OP\_QUERY message with an[OP\_REPLY](https://doc
 
 The OP\_GET\_MORE message is used to query the database for documents in a collection. The format of the OP\_GET\_MORE message is:
 
-```
-struct
-{
-MsgHeader
-header
-;
-// standard message header
-int32
-ZERO
-;
-// 0 - reserved for future use
-cstring
-fullCollectionName
-;
-// "dbname.collectionname"
-int32
-numberToReturn
-;
-// number of documents to return
-int64
-cursorID
-;
-// cursorID from the OP_REPLY
+```c
+struct {
+    MsgHeader header;             // standard message header
+    int32     ZERO;               // 0 - reserved for future use
+    cstring   fullCollectionName; // "dbname.collectionname"
+    int32     numberToReturn;     // number of documents to return
+    int64     cursorID;           // cursorID from the OP_REPLY
 }
 ```
 
@@ -303,29 +214,13 @@ The database will respond to an OP\_GET\_MORE message with an[OP\_REPLY](https:/
 
 The OP\_DELETE message is used to remove one or more documents from a collection. The format of the OP\_DELETE message is:
 
-```
-struct
-{
-MsgHeader
-header
-;
-// standard message header
-int32
-ZERO
-;
-// 0 - reserved for future use
-cstring
-fullCollectionName
-;
-// "dbname.collectionname"
-int32
-flags
-;
-// bit vector - see below for details.
-document
-selector
-;
-// query object.  See below for details.
+```c
+struct {
+    MsgHeader header;             // standard message header
+    int32     ZERO;               // 0 - reserved for future use
+    cstring   fullCollectionName; // "dbname.collectionname"
+    int32     flags;              // bit vector - see below for details.
+    document  selector;           // query object.  See below for details.
 }
 ```
 
@@ -343,27 +238,12 @@ There is no response to an OP\_DELETE message.
 
 The OP\_KILL\_CURSORS message is used to close an active cursor in the database. This is necessary to ensure that database resources are reclaimed at the end of the query. The format of the OP\_KILL\_CURSORS message is:
 
-```
-struct 
-{
-
-    MsgHeader header
-;
-            // standard message header
-    int32     ZERO
-;
-              // 
-0
- - reserved 
-for
- future use
-    int32     numberOfCursorIDs
-;
- // number of cursorIDs in message
-    int64*    cursorIDs
-;
-         // sequence of cursorIDs to close
-
+```c
+struct {
+    MsgHeader header;            // standard message header
+    int32     ZERO;              // 0 - reserved for future use
+    int32     numberOfCursorIDs; // number of cursorIDs in message
+    int64*    cursorIDs;         // sequence of cursorIDs to close
 }
 ```
 
@@ -386,37 +266,14 @@ The`OP_COMMAND`format and protocol is not stable and may change between releases
 
 `OP_COMMAND`is a wire protocol message used internally for intra-cluster database command requests issued by one MongoDB server to another. The receiving database sends back an[OP\_COMMANDREPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-commandreply)as a response to a`OP_COMMAND`.
 
-```
-struct 
-{
-
-   MsgHeader header
-;
-     // standard message header
-   cstring database
-;
-     // the name of the database to run the 
-command
- on
-   cstring commandName
-;
-  // the name of the 
-command
-
-   document metadata
-;
-    // a BSON document containing any metadata
-   document commandArgs
-;
- // a BSON document containing the 
-command
- arguments
-   inputDocs
-;
-            // a 
-set
- of zero or more documents
-
+```c
+struct {
+   MsgHeader header;     // standard message header
+   cstring database;     // the name of the database to run the command on
+   cstring commandName;  // the name of the command
+   document metadata;    // a BSON document containing any metadata
+   document commandArgs; // a BSON document containing the command arguments
+   inputDocs;            // a set of zero or more documents
 }
 ```
 
@@ -435,7 +292,7 @@ set
 
 The`OP_REPLY`message is sent by the database in response to an[OP\_QUERY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-query)or[OP\_GET\_MORE](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-get-more)message. The format of an OP\_REPLY message is:
 
-```
+```c
 struct {
     MsgHeader header;         // standard message header
     int32     responseFlags;  // bit vector - see details below
