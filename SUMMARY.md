@@ -15,3 +15,5 @@
   * [通过地理位置查找餐厅](geo-queries/example.md)
 * [数据模型](data-models/README.md)
   * [文档验证](data-models/validation.md)
+* [数据模型](admin/README.md)
+  * [文档验证](admin/prod-notes.md)
