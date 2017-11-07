@@ -13,3 +13,5 @@
   * [文本索引](text-search/indexes.md)
 * [地理查询](geo-queries/README.md)
   * [通过地理位置查找餐厅](geo-queries/example.md)
+* [数据模型](data-models/README.md)
+  * [文档验证](data-models/validation.md)
