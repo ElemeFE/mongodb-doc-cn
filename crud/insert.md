@@ -5,7 +5,6 @@ This page provides examples of insert operations in MongoDB.
 > CREATING A COLLECTION
 >
 > If the collection does not currently exist, insert operations will create the collection.
->
 
 ## Insert a Single Document
 
@@ -15,53 +14,15 @@ New in version 3.2.
 
 The following example inserts a new document into the`inventory`collection. If the document does not specify an`_id`field, the Node.js driver adds the`_id`field with an ObjectId value to the new document. See[Insert Behavior](https://docs.mongodb.com/manual/tutorial/insert-documents/#write-op-insert-behavior).
 
-```
-db
-.
-collection
-(
-'inventory'
-).
-insertOne
-({
-item
-:
-"canvas"
-,
-qty
-:
-100
-,
-tags
-:
-[
-"cotton"
-],
-size
-:
-{
-h
-:
-28
-,
-w
-:
-35.5
-,
-uom
-:
-"cm"
-}
+```js
+db.collection('inventory').insertOne({
+  item: "canvas",
+  qty: 100,
+  tags: ["cotton"],
+  size: { h: 28, w: 35.5, uom: "cm" }
 })
-.
-then
-(
-function
-(
-result
-)
-{
-// process result
+.then(function(result) {
+  // process result
 })
 ```
 
@@ -69,22 +30,9 @@ result
 
 To retrieve the document that you just inserted,[query the collection](https://docs.mongodb.com/manual/core/document/#document-query-filter):
 
-```
-var
-cursor
-=
-db
-.
-collection
-(
-'inventory'
-).
-find
-({
-item
-:
-"canvas"
-,
+```js
+var cursor = db.collection('inventory').find({
+  item: "canvas",
 });
 ```
 
@@ -96,116 +44,23 @@ New in version 3.2.
 
 The following example inserts three new documents into the`inventory`collection. If the documents do not specify an`_id`field, the Node.js driver adds the`_id`field with an ObjectId value to each document. See[Insert Behavior](https://docs.mongodb.com/manual/tutorial/insert-documents/#write-op-insert-behavior).
 
-```
-db
-.
-collection
-(
-'inventory'
-).
-insertMany
-([
-{
-item
-:
-"journal"
-,
-qty
-:
-25
-,
-tags
-:
-[
-"blank"
-,
-"red"
-],
-size
-:
-{
-h
-:
-14
-,
-w
-:
-21
-,
-uom
-:
-"cm"
-}},
-{
-item
-:
-"mat"
-,
-qty
-:
-85
-,
-tags
-:
-[
-"gray"
-],
-size
-:
-{
-h
-:
-27.9
-,
-w
-:
-35.5
-,
-uom
-:
-"cm"
-}},
-{
-item
-:
-"mousepad"
-,
-qty
-:
-25
-,
-tags
-:
-[
-"gel"
-,
-"blue"
-],
-size
-:
-{
-h
-:
-19
-,
-w
-:
-22.85
-,
-uom
-:
-"cm"
-}}
+```js
+db.collection('inventory').insertMany([
+  { item: "journal",
+    qty: 25,
+    tags: ["blank", "red"],
+    size: { h: 14, w: 21, uom: "cm" }},
+  { item: "mat",
+    qty: 85,
+    tags: ["gray"],
+    size: { h: 27.9, w: 35.5, uom: "cm" }},
+  { item: "mousepad",
+    qty: 25,
+    tags: ["gel", "blue"],
+    size: { h: 19, w: 22.85, uom: "cm" }}
 ])
-.
-then
-(
-function
-(
-result
-)
-{
-// process result
+.then(function(result) {
+  // process result
 })
 ```
 
@@ -213,18 +68,8 @@ result
 
 To retrieve the inserted documents,[query the collection](https://docs.mongodb.com/manual/tutorial/query-documents/#read-operations-query-document):
 
-```
-var
-cursor
-=
-db
-.
-collection
-(
-'inventory'
-).
-find
-({});
+```js
+var cursor = db.collection('inventory').find({});
 ```
 
 ## Insert Behavior
