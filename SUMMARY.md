@@ -7,3 +7,4 @@
   * [配置](shell/configure.md)
 * [增删改查](crud/README.md)
   * [插入](crud/insert.md)
+* [聚合](aggregation/README.md)
