@@ -1,8 +1,15 @@
 # Summary
 
 * [README](README.md)
-* [简介](./introduction/README.md)
-  * [开始使用](./introduction/getting-started.md)
+* [简介](introduction/README.md)
+  * [开始使用](introduction/getting-started.md)
+  * [数据库 & 集合](introduction/db-and-collections.md)
+    * [视图](introduction/views.md)
+    * [定长集合](introduction/capped-col.md)
+  * [文档](introduction/document.md)
+  * [BSON 类型](introduction/bson.md)
+  * [比较/排序命令](introduction/comparison-sort-order.md)
+  * [MongoDB 拓展 JSON](introduction/extended-json.md)
 * [Shell 工具](shell/README.md)
   * [配置](shell/configure.md)
 * [增删改查](crud/README.md)
