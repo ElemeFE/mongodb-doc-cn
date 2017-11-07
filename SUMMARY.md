@@ -18,7 +18,7 @@
 * [Admin](admin/README.md)
   * [生产事项](admin/prod-notes.md)
 * 索引
-  * 单字段索引
+  * [单字段索引](indexes/single-field.md)
   * 混合索引
 * [安全](an-quan.md)
   * checklist
