@@ -32,6 +32,7 @@
     * [仲裁节点](replication/member/arbiter.md)
   * [Oplog](replication/op-log.md)
 * [Sharding](sharding/README.md)
+  * [Shard Keys](sharding/keys.md)
 * FAQ
   * [MongoDB 基本问题](faq/fundamentals.md)
 * 引用
