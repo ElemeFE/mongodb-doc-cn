@@ -8,3 +8,4 @@
 * [增删改查](crud/README.md)
   * [插入](crud/insert.md)
 * [聚合](aggregation/README.md)
+  * [Pipeline](aggregation/pipeline.md)
