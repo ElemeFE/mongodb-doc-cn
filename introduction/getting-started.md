@@ -184,11 +184,11 @@ var cursor = db.collection('inventory').find({
 
 当你阅读完 Getting Started 概览之后, 你可以通过下列课程和主题获得更多帮助:
 
-To learn more about the MongoDB query language and other MongoDB fundamentals, sign up for[M001: MongoDB Basics](https://university.mongodb.com/courses/M001/about).
+想学习更多关于 MongoDB 查询语句和其他 MongoDB 基础知识, 可以注册 [M001: MongoDB Basics](https://university.mongodb.com/courses/M001/about) 课程.
 
 | Introduction | Developers | Administrators | Reference |
 | :--- | :--- | :--- | :--- |
-| [Introduction to MongoDB](https://docs.mongodb.com/manual/introduction/)<br>[Installation Guides](https://docs.mongodb.com/manual/installation/)<br>[Databases and Collections](https://docs.mongodb.com/manual/core/databases-and-collections/)<br>[Documents](https://docs.mongodb.com/manual/core/document/) | [CRUD Operations](https://docs.mongodb.com/manual/crud/)<br>[Aggregation](https://docs.mongodb.com/manual/aggregation/)<br>[SQL to MongoDB](https://docs.mongodb.com/manual/reference/sql-comparison/)<br>[Indexes](https://docs.mongodb.com/manual/indexes/) | [Production Notes](https://docs.mongodb.com/manual/administration/production-notes/)<br>[Replica Sets](https://docs.mongodb.com/manual/replication/)<br>[Sharded Clusters](https://docs.mongodb.com/manual/sharding/)<br>[MongoDB Security](https://docs.mongodb.com/manual/security/) | [Shell Methods](https://docs.mongodb.com/manual/reference/method/)<br>[Query Operators](https://docs.mongodb.com/manual/reference/operator/)<br>[Reference](https://docs.mongodb.com/manual/reference/)<br>[Glossary](https://docs.mongodb.com/manual/reference/glossary/) |
+| [MongoDB 简介](/introduction/)<br>[安装指南](https://docs.mongodb.com/manual/installation/)<br>[数据库 & 集合](/introduction/db-and-collections.html)<br>[文档](/introduction/document.html) | [增删改查](http://localhost:4000/crud/)<br>[聚合](http://localhost:4000/aggregation/)<br>[SQL 转 MongoDB](https://docs.mongodb.com/manual/reference/sql-comparison/)<br>[索引](https://docs.mongodb.com/manual/indexes/) | [Production Notes](https://docs.mongodb.com/manual/administration/production-notes/)<br>[复制集](https://docs.mongodb.com/manual/replication/)<br>[Sharded 集群](https://docs.mongodb.com/manual/sharding/)<br>[MongoDB 安全](https://docs.mongodb.com/manual/security/) | [Shell 方法](https://docs.mongodb.com/manual/reference/method/)<br>[查询操作符](https://docs.mongodb.com/manual/reference/operator/)<br>[Reference](https://docs.mongodb.com/manual/reference/)<br>[术语表](https://docs.mongodb.com/manual/reference/glossary/) |
 
 
 
