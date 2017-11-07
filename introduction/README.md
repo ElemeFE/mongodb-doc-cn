@@ -5,7 +5,7 @@
 * [文档数据库](#文档数据库)
 * [关键特性](#关键特性)
 
-MongoDB is an open-source 文档数据库 that provides high performance, high availability, and automatic scaling.
+MongoDB is an 开源文档数据库 that provides high performance, high availability, and automatic scaling.
 
 ## 文档数据库
 
