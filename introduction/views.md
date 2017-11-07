@@ -1,22 +1,22 @@
-# Views
+# 视图
 
-New in version 3.4.
+_3.4 版本新功能_
 
-On this page
+本页索引
 
-* [Create View](https://docs.mongodb.com/manual/core/views/#create-view)
-* [Behavior](https://docs.mongodb.com/manual/core/views/#behavior)
-* [Drop a View](https://docs.mongodb.com/manual/core/views/#drop-a-view)
-* [Modify a View](https://docs.mongodb.com/manual/core/views/#modify-a-view)
-* [Supported Operations](https://docs.mongodb.com/manual/core/views/#supported-operations)
+* [创建视图](https://docs.mongodb.com/manual/core/views/#创建视图)
+* [表现](https://docs.mongodb.com/manual/core/views/#表现)
+* [删除视图](https://docs.mongodb.com/manual/core/views/#删除视图)
+* [修改视图](https://docs.mongodb.com/manual/core/views/#修改视图)
+* [支持操作](https://docs.mongodb.com/manual/core/views/#支持操作)
 
-Starting in version 3.4, MongoDB adds support for creating read-only views from existing collections or other views.
+从 3.4 开始, MongoDB 添加了基于已存在的集合或者 View (视图) 创建只读的 View 支持.
 
-## Create View
+## 创建视图
 
-To create or define a view, MongoDB 3.4 introduces:
+创建或者定义一个视图, MongoDB 3.4 的介绍是:
 
-* the`viewOn`and`pipeline`options to the existing[`create`](https://docs.mongodb.com/manual/reference/command/create/#dbcmd.create)command \(and[`db.createCollection`](https://docs.mongodb.com/manual/reference/method/db.createCollection/#db.createCollection)helper\):
+* the `viewOn` and `pipeline`options to the existing[`create`](https://docs.mongodb.com/manual/reference/command/create/#dbcmd.create)command \(and[`db.createCollection`](https://docs.mongodb.com/manual/reference/method/db.createCollection/#db.createCollection)helper\):
 
   ```
   db.runCommand( { create: <view>, viewOn: <source>, pipeline: <pipeline> } )
@@ -34,15 +34,15 @@ To create or define a view, MongoDB 3.4 introduces:
   db.createView(<view>, <source>, <pipeline>, <collation> )
   ```
 
-## Behavior
+## 表现
 
-Views exhibit the following behavior:
+视图具备以下几种表现:
 
-### Read Only
+### 只读
 
-Views are read-only; write operations on views will error.
+视图是只读的; 通过视图进行写操作会报错.
 
-The following read operations can support views:
+以下为支持视图的读操作:
 
 * [`db.collection.find()`](https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find)
 * [`db.collection.findOne()`](https://docs.mongodb.com/manual/reference/method/db.collection.findOne/#db.collection.findOne)
@@ -50,97 +50,80 @@ The following read operations can support views:
 * [`db.collection.count()`](https://docs.mongodb.com/manual/reference/method/db.collection.count/#db.collection.count)
 * [`db.collection.distinct()`](https://docs.mongodb.com/manual/reference/method/db.collection.distinct/#db.collection.distinct)
 
-### Index Use and Sort Operations
+### 索引使用 & 排序操作
 
-* Views use the indexes of the underlying collection.
+* 视图使用其上游集合的索引.
 
-* As the indexes are on the underlying collection, you cannot create, drop or re-build indexes on the view directly nor get a list of indexes on the view.
+* 由于索引是基于集合的, 所以你不能基于视图创建, 删除或重建索引, 也不能获取视图的索引列表.
 
-* You cannot specify a[`$natural`](https://docs.mongodb.com/manual/reference/operator/meta/natural/#metaOp._S_natural)sort on a view.
+* 你不能指定 [`$natural`](https://docs.mongodb.com/manual/reference/operator/meta/natural/#metaOp._S_natural) 排序.
 
-  For example, the following operation is_invalid_:
+  例如, 下列操作是 _错误的_:
 
   ```
   db.view.find().sort({$natural: 1})
   ```
 
-### Projection Restrictions
+### Project 限制
 
-[`find()`](https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find)operations on views do not support the following[projection](https://docs.mongodb.com/manual/reference/operator/projection/)operators:
+视图上的 [`find()`](https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find) 方法不支持如下[projection](https://docs.mongodb.com/manual/reference/operator/projection/) 操作:
 
 * [`$`](https://docs.mongodb.com/manual/reference/operator/projection/positional/#proj._S_)
 * [`$elemMatch`](https://docs.mongodb.com/manual/reference/operator/projection/elemMatch/#proj._S_elemMatch)
 * [`$slice`](https://docs.mongodb.com/manual/reference/operator/projection/slice/#proj._S_slice)
 * [`$meta`](https://docs.mongodb.com/manual/reference/operator/projection/meta/#proj._S_meta)
 
-### Immutable Name
+### 不能改变名称
 
-You cannot rename[views](https://docs.mongodb.com/manual/core/views/#).
+你不能重命名[视图](#).
 
-### View Creation
+### 视图创建
 
-* Views are computed on demand during read operations, and MongoDB executes read operations on views as part of the underlying aggregation pipeline. As such, views do not support operations such as:
-  * [`db.collection.mapReduce()`](https://docs.mongodb.com/manual/reference/method/db.collection.mapReduce/#db.collection.mapReduce)
-    ,
-  * [`$text`](https://docs.mongodb.com/manual/reference/operator/query/text/#op._S_text)
-    operator, since
-    `$text`
-    operation in aggregation is valid only for the first stage,
-  * [`geoNear`](https://docs.mongodb.com/manual/reference/command/geoNear/#dbcmd.geoNear)
-    command and
-    [`$geoNear`](https://docs.mongodb.com/manual/reference/operator/aggregation/geoNear/#pipe._S_geoNear)
-    pipeline stage.
-* If the aggregation pipeline used to create the view suppresses the
-  `_id`
-  field, documents in the view do not have the
-  `_id`
-  field.
+* 视图是在读操邹期间根据需要实时计算的, 同时 MongoDB 基于视图的读操作是底层聚合管道 (aggregation pipeline) 的一部分. 因此, 视图不支持一下操作:
+  * [`db.collection.mapReduce()`](https://docs.mongodb.com/manual/reference/method/db.collection.mapReduce/#db.collection.mapReduce),
+  * [`$text`](https://docs.mongodb.com/manual/reference/operator/query/text/#op._S_text) 操作, 因为 `$text` 只在聚合的第一阶段有效,
+  * [`geoNear`](https://docs.mongodb.com/manual/reference/command/geoNear/#dbcmd.geoNear) 命令和 [`$geoNear`](https://docs.mongodb.com/manual/reference/operator/aggregation/geoNear/#pipe._S_geoNear)
+    管道阶段.
+* 如果用于创建视图的聚合管道屏蔽了 `_id` 字段, 那么视图中的文档也会没有 `_id` 字段.
 
-### Sharded View
+### 分片视图
 
-Views are considered sharded if their underlying collection is sharded. As such, you cannot specify a sharded view for the`from`field in[`$lookup`](https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/#pipe._S_lookup)and[`$graphLookup`](https://docs.mongodb.com/manual/reference/operator/aggregation/graphLookup/#pipe._S_graphLookup)operations.
+如果视图依赖的集合是分片的, 那么视图也视为分片的. 因此, 你不能指定分片视图中 [`$lookup`](https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/#pipe._S_lookup) 的 `from`字段与 [`$graphLookup`](https://docs.mongodb.com/manual/reference/operator/aggregation/graphLookup/#pipe._S_graphLookup) 操作.
 
-### Views and Collation
+### Views 与 Collation
 
-* You can specify a default
-  [collation](https://docs.mongodb.com/manual/reference/collation/)
-  for a view at creation time. If no collation is specified, the view’s default collation is the “simple” binary comparison collator. That is, the view does not inherit the collection’s default collation.
+* You can specify a default [collation](https://docs.mongodb.com/manual/reference/collation/) for a view at creation time. If no collation is specified, the view’s default collation is the “simple” binary comparison collator. That is, the view does not inherit the collection’s default collation.
 * String comparisons on the view use the view’s default collation. An operation that attempts to change or override a view’s default collation will fail with an error.
 * If creating a view from another view, you cannot specify a collation that differs from the source view’s collation.
-* If performing an aggregation that involves multiple views, such as with
-  [`$lookup`](https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/#pipe._S_lookup)
-  or
-  [`$graphLookup`](https://docs.mongodb.com/manual/reference/operator/aggregation/graphLookup/#pipe._S_graphLookup)
-  , the views must have the same
-  [collation](https://docs.mongodb.com/manual/reference/collation/)
-  .
+* If performing an aggregation that involves multiple views, such as with [`$lookup`](https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/#pipe._S_lookup) or [`$graphLookup`](https://docs.mongodb.com/manual/reference/operator/aggregation/graphLookup/#pipe._S_graphLookup) , the views must have the same [collation](https://docs.mongodb.com/manual/reference/collation/).
 
-### Public View Definition
+### 公共视图定义
 
-Operations that lists collections, such as[`db.getCollectionInfos()`](https://docs.mongodb.com/manual/reference/method/db.getCollectionInfos/#db.getCollectionInfos)and[`db.getCollectionNames()`](https://docs.mongodb.com/manual/reference/method/db.getCollectionNames/#db.getCollectionNames), include views in their outputs.
+列出集合的操作, 如 [`db.getCollectionInfos()`](https://docs.mongodb.com/manual/reference/method/db.getCollectionInfos/#db.getCollectionInfos) 和 [`db.getCollectionNames()`](https://docs.mongodb.com/manual/reference/method/db.getCollectionNames/#db.getCollectionNames), 的结果中会包括它们的视图.
 
-IMPORTANT
+> IMPORTANT
+>
+> 视图定义是公开的; 即在视图上的 [`db.getCollectionInfos()`](https://docs.mongodb.com/manual/reference/method/db.getCollectionInfos/#db.getCollectionInfos) 和 `explain` 操作将会包括定义视图的管道. 因此, 请避免直接引用视图定义中敏感的字段和值.
+>
 
-The view definition is public; i.e.[`db.getCollectionInfos()`](https://docs.mongodb.com/manual/reference/method/db.getCollectionInfos/#db.getCollectionInfos)and`explain`operations on the view will include the pipeline that defines the view. As such, avoid referring directly to sensitive fields and values in view definitions.
+## 删除视图
 
-## Drop a View
+要删除视图, 请使用视图上的 [`db.collection.drop()`](https://docs.mongodb.com/manual/reference/method/db.collection.drop/#db.collection.drop) 方法.
 
-To remove a view, use the[`db.collection.drop()`](https://docs.mongodb.com/manual/reference/method/db.collection.drop/#db.collection.drop)method on the view.
+## 修改视图
 
-## Modify a View
+你可以通过删除或者重建的方式修改视图, 也可以使用 [`collMod`](https://docs.mongodb.com/manual/reference/command/collMod/#dbcmd.collMod) 命令.
 
-You can modify a view either by dropping and recreating the view or using the[`collMod`](https://docs.mongodb.com/manual/reference/command/collMod/#dbcmd.collMod)command.
+## 支持操作
 
-## Supported Operations
+以下操作支持视图, 除了本文中提到的限制除外:
 
-The following operations provide support for views, except for the restrictions mentioned in this page:
-
-| Commands | Methods |
+| 命令 | 方法 |
 | :--- | :--- |
-| [`create`](https://docs.mongodb.com/manual/reference/command/create/#dbcmd.create) | [`db.createCollection()`](https://docs.mongodb.com/manual/reference/method/db.createCollection/#db.createCollection)[`db.createView()`](https://docs.mongodb.com/manual/reference/method/db.createView/#db.createView) |
+| [`create`](https://docs.mongodb.com/manual/reference/command/create/#dbcmd.create) | [`db.createCollection()`](https://docs.mongodb.com/manual/reference/method/db.createCollection/#db.createCollection) <br> [`db.createView()`](https://docs.mongodb.com/manual/reference/method/db.createView/#db.createView) |
 | [`collMod`](https://docs.mongodb.com/manual/reference/command/collMod/#dbcmd.collMod) |  |
-|  | [`db.getCollection()`](https://docs.mongodb.com/manual/reference/method/db.getCollection/#db.getCollection)[`db.getCollectionInfos()`](https://docs.mongodb.com/manual/reference/method/db.getCollectionInfos/#db.getCollectionInfos)[`db.getCollectionNames()`](https://docs.mongodb.com/manual/reference/method/db.getCollectionNames/#db.getCollectionNames) |
-| [`find`](https://docs.mongodb.com/manual/reference/command/find/#dbcmd.find)[`distinct`](https://docs.mongodb.com/manual/reference/command/distinct/#dbcmd.distinct)[`count`](https://docs.mongodb.com/manual/reference/command/count/#dbcmd.count) | [`db.collection.aggregate()`](https://docs.mongodb.com/manual/reference/method/db.collection.aggregate/#db.collection.aggregate)[`db.collection.find()`](https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find)[`db.collection.findOne()`](https://docs.mongodb.com/manual/reference/method/db.collection.findOne/#db.collection.findOne)[`db.collection.count()`](https://docs.mongodb.com/manual/reference/method/db.collection.count/#db.collection.count)[`db.collection.distinct()`](https://docs.mongodb.com/manual/reference/method/db.collection.distinct/#db.collection.distinct) |
+|  | [`db.getCollection()`](https://docs.mongodb.com/manual/reference/method/db.getCollection/#db.getCollection) <br> [`db.getCollectionInfos()`](https://docs.mongodb.com/manual/reference/method/db.getCollectionInfos/#db.getCollectionInfos) <br> [`db.getCollectionNames()`](https://docs.mongodb.com/manual/reference/method/db.getCollectionNames/#db.getCollectionNames) |
+| [`find`](https://docs.mongodb.com/manual/reference/command/find/#dbcmd.find) <br> [`distinct`](https://docs.mongodb.com/manual/reference/command/distinct/#dbcmd.distinct) <br> [`count`](https://docs.mongodb.com/manual/reference/command/count/#dbcmd.count) | [`db.collection.aggregate()`](https://docs.mongodb.com/manual/reference/method/db.collection.aggregate/#db.collection.aggregate) <br> [`db.collection.find()`](https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find) <br> [`db.collection.findOne()`](https://docs.mongodb.com/manual/reference/method/db.collection.findOne/#db.collection.findOne) <br> [`db.collection.count()`](https://docs.mongodb.com/manual/reference/method/db.collection.count/#db.collection.count) <br> [`db.collection.distinct()`](https://docs.mongodb.com/manual/reference/method/db.collection.distinct/#db.collection.distinct) |
 
 
 
