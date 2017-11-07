@@ -29,3 +29,4 @@
 * 引用
   * 操作符
     * [查询过滤操作符](reference/operators/query-and-project.md)
+  * [数据库命令](reference/db-cmd/README.md)
