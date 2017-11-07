@@ -4,8 +4,6 @@
 
 接下来的教程使用 [MongoDB Node.js 驱动](http://mongodb.github.io/node-mongodb-native/2.2/) 来连接一个免费的 Atlas 集群, 然后执行插入和查询操作.
 
-想学习更多关于 MongoDB 查询语句一起其他 MongoDB 的基础支持, 可以注册 [M001: MongoDB Basics](https://university.mongodb.com/courses/M001/about) 课程.
-
 ## 1.创建一个 Atlas 账户.
 
 想要使用 [MongoDB Atlas](https://cloud.mongodb.com/?jmp=docs), 请先创建你的账户并登陆到 Atlas.
@@ -39,14 +37,13 @@
 
 ## 4.安全设置
 
-Atlas only allows client connections to the cluster from entries in the group’s whitelist. To add an entry to the whitelist:
+Atlas 只允许 group 入口白名单中的客户端连接集群. 在白名单中添加一个入口:
 
 ![](https://docs.mongodb.com/manual/_images/atlas-setup-cluster-security.png "Screeenshot of cluster security tab on Atlas.")
 
-1. Click the Security tab from the Clusters view.
-2. Click IP Whitelist, then Add IP Address. You may either enter the IP address manually in the
-   Whitelist Entry field or click the Add Current IP Address 按钮.
-3. Click Confirm and wait for Atlas to update the firewall.
+1. 在 Clusters 页面点击 Security 选项.
+2. 点击 IP Whitelist, 然后添加 IP Address. 你可以在 Whitelist Entry 中手动输入 IP 地址, 也可以点击 Add Current IP Address 按钮.
+3. 点击 Confirm 然后等待 Atlas 更新防火墙.
 
 ## 5.下载驱动客户端.
 
@@ -130,7 +127,7 @@ db.collection('inventory').insertMany([
 var cursor = db.collection('inventory').find({});
 ```
 
-To query for documents that match specific equality conditions, pass the[find\(\)](http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#find)method a[查询过滤](https://docs.mongodb.com/manual/core/document/#document-query-filter)with the`<field>:<value>`of the desired documents. The following example selects from the`inventory`collection all documents where the`status`equals`"D"`:
+要查询匹配指定条件的文档, 可以使用 [find\(\)](http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#find) 方法, 并传递 `<字段>:<值>` 格式的[过滤](https://docs.mongodb.com/manual/core/document/#document-query-filter) 条件. 下例为查询 `inventory` 集合中所有的 `status` 为 `"D"` 的文档:
 
 
 ```js
@@ -139,7 +136,7 @@ var cursor = db.collection('inventory').find({ status: "D" });
 
 ### 匹配嵌套内容
 
-Equality matches on the whole embedded document require an\_exact\_match of the specified`<value>`document, including the field order. For example, the following query selects all documents where the field`size`equals the document`{h:14,w:21,uom:"cm"}`:
+相等的匹配在匹配整个嵌套结构的文档时需要 _确切_ 地指定 `<value>`, 包括字段的顺序. 举个栗子, 下列语句可以查询所有 `size` 字段等于 `{h:14,w:21,uom:"cm"}` 的文档:
 
 
 ```js
@@ -150,8 +147,7 @@ var cursor = db.collection('inventory').find({
 
 ### 匹配嵌套文档中的一个字段
 
-The following example selects all documents where the field`uom`nested in the`size`field equals the string value`"in"`:
-
+查询所有嵌套在 `size` 字段下的 `uom` 字段等于 `"in"` 的文档:
 
 ```js
 var cursor = db.collection('inventory').find({ 
@@ -161,8 +157,7 @@ var cursor = db.collection('inventory').find({
 
 ### 匹配数组中的一个元素
 
-The following example queries for all documents where`tags`is an array that contains the string`"red"`as one of its elements:
-
+查询 `tags` 是一个数组并且其中包含 `"red"` 的所有文档:
 
 ```js
 var cursor = db.collection('inventory').find({ 
@@ -172,7 +167,7 @@ var cursor = db.collection('inventory').find({
 
 ### 精确匹配一个数组
 
-The following example queries for all documents where the field`tags`value is an array with exactly two elements,`"red"`and`"blank"`, in the specified order:
+查询 `tags` 字段的值为一个包含 `"red"` 和 `"blank"` 并且顺序确定的数组的所有文档:
 
 
 ```js
@@ -181,9 +176,9 @@ var cursor = db.collection('inventory').find({
 });
 ```
 
-For more information and query examples, see[查询文档](https://docs.mongodb.com/manual/tutorial/query-documents/#read-operations-queries)in the[CRUD](https://docs.mongodb.com/manual/crud/#crud)section.
+更多信息以及查询例子, 参见[增删改查](https://docs.mongodb.com/manual/crud/#crud)章节的[查询](https://docs.mongodb.com/manual/tutorial/query-documents/#read-operations-queries).
 
-To update or delete documents, see[Update Documents](https://docs.mongodb.com/manual/tutorial/update-documents/#write-op-update)and[Delete Documents](https://docs.mongodb.com/manual/tutorial/remove-documents/#write-op-delete).
+关于更新和删除文档, 参见[Update Documents](https://docs.mongodb.com/manual/tutorial/update-documents/#write-op-update)和[Delete Documents](https://docs.mongodb.com/manual/tutorial/remove-documents/#write-op-delete).
 
 ## 下一步
 
