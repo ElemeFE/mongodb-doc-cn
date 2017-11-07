@@ -28,16 +28,16 @@
 
 1. 输入 Cluster Name.
 
-2. Click the Select button for Instance Size`M0`for Atlas Free Tier.
+2. 找到 M0 级免费教学实例, 并点击对应的 Select 按钮.
 
-3. Enter aUsernameandPassword.
+3. 输入 Username (用户名) 和 Password (密码).
 
    ![](https://docs.mongodb.com/manual/_images/atlas-create-cluster-add-user.png "Screenshot of admin username and password fields that appear only when admin user doesn&apos;t exist.")  
    These fields appear only if no MongoDB user exists for your Atlas group. If you created users in the group beforehand these fields will not appear.
 
-4. ClickConfirm & Deploy.
+4. 点击 Confirm & Deploy (确认部署).
 
-## Setup security.
+## 4.安全设置
 
 Atlas only allows client connections to the cluster from entries in the group’s whitelist. To add an entry to the whitelist:
 
@@ -45,34 +45,32 @@ Atlas only allows client connections to the cluster from entries in the group’
 
 1. Click the Security tab from the Clusters view.
 2. Click IP Whitelist, then Add IP Address. You may either enter the IP address manually in the
-   Whitelist Entry field or click the Add Current IP Address button.
+   Whitelist Entry field or click the Add Current IP Address 按钮.
 3. Click Confirm and wait for Atlas to update the firewall.
 
-## Download the connecting client.
+## 5.下载驱动客户端.
 
-First create your project using`npminit`then install the[MongoDB Node.js Driver](http://mongodb.github.io/node-mongodb-native/2.2/)via`npm`:
-
-Copy
+推荐通过 `npm init` 初始化一个项目的配置文件, 然后用 `npm` 安装 [MongoDB Node.js 驱动](http://mongodb.github.io/node-mongodb-native/2.2/):
 
 ```
 npm install mongodb --save
 ```
 
-For more information, see the Node.js driver[Quick Start](http://mongodb.github.io/node-mongodb-native/2.2/installation-guide/installation-guide/)documentation.
+需要更多信息, 请查看 Node.js 驱动[快速开始](http://mongodb.github.io/node-mongodb-native/2.2/installation-guide/installation-guide/)文档.
 
-## Get the URI connection string.
+## 6.获取 URI 连接串.
 
-From the MongoDB AtlasClustersview:
+通过 MongoDB Atlas Clusters 页面:
 
-1. Click the Connect button to view the [URI Connection String](https://docs.mongodb.com/manual/reference/connection-string/#mongodb-uri).
-2. Copy the connection string to the clipboard.
-3. Paste the connection string somewhere and replace `<PASSWORD>` with the password for the user created earlier, and
-   `<DATABASE>` with the name of the database to which you wish to connect. In the following examples, the `test` database is used.
-4. Copy the modified URI to the clipboard.
+1. 点击 Connect 按钮来查看 [URI 连接字符串](https://docs.mongodb.com/manual/reference/connection-string/#mongodb-uri).
+2. 复制连接字符串.
+3. 将连接串中的 `<PASSWORD>` 替换成之前创建时设置的密码, 并且替换
+   `<DATABASE>` 为你要连接/简历的数据库名. 下文中使用 `test` 数据库.
+4. 复制修改好的 URI.
 
-## Connect to the cluster.
+## 7.连接到集群
 
-Using the**URI string**from the previous step, connect to the Atlas cluster:
+使用上一步获取的 **URI 字符串**, 连接 Atlas 集群:
 
 ```js
 var MongoClient = require('mongodb').MongoClient;
@@ -85,17 +83,16 @@ MongoClient.connect(uri, function(err, db) {
 });
 ```
 
-## Documents and Collections
+## 文档 & 集合
 
-MongoDB stores data as[BSON documents](https://docs.mongodb.com/manual/core/document/#bson-document-format)\(binary represenatation of JSON\) in[collections](https://docs.mongodb.com/manual/reference/glossary/#term-collection). MongoDB databases hold collections of documents.
+MongoDB 在 [collections](https://docs.mongodb.com/manual/reference/glossary/#term-collection) 中使用 [BSON 结构](https://docs.mongodb.com/manual/core/document/#bson-document-format)\(二进制格式的 JSON\) 来存储数据. MongoDB 中一个数据库对应多个集合, 一个集合对应多个文档.
 
-## Insert Documents
+## 插入文档
 
-[Collection.insertMany\(\)](http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#insertMany)can insert_multiple_[documents](https://docs.mongodb.com/manual/core/document/#bson-document-format)into a collection. Pass an array of documents to the method.
+[Collection.insertMany\(\)](http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#insertMany) 可以用来插入 _多个_ [文档](https://docs.mongodb.com/manual/core/document/#bson-document-format). 传递一个包含文档的给这个方法.
 
-The following example inserts new documents into the`inventory`collection:
+如下代码插入了新的文档到 `inventory` 集合中:
 
-Copy
 
 ```js
 db.collection('inventory').insertMany([
@@ -116,37 +113,34 @@ db.collection('inventory').insertMany([
 })
 ```
 
-[insertMany\(\)](http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#insertMany)returns a document that includes the newly inserted documents`_id`field values. See the[reference](https://docs.mongodb.com/manual/reference/method/db.collection.insertMany/#insertmany-examples)for an example.
+[insertMany\(\)](http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#insertMany) 返回一个包含被插入文档的 `_id` 的数据. 可以查看[这里](https://docs.mongodb.com/manual/reference/method/db.collection.insertMany/#insertmany-examples)的例子.
 
-Use[Collection.insertOne\(\)](http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#insertOne)to insert a single document.
+使用 [Collection.insertOne\(\)](http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#insertOne) 来插入单个文档.
 
-For more information and examples, see[Insert Documents](https://docs.mongodb.com/manual/tutorial/insert-documents/#write-op-insert)in the[CRUD](https://docs.mongodb.com/manual/crud/#crud)section.
+想要更多的文档和例子, 可以参见[增删改查](/crud/)章节的[插入](/crud/insert.html).
 
-## Query Documents
+## Query
 
-### Select All Documents
+### 查询所有
 
-To select all documents in the collection, pass an empty document as the[query filter document](https://docs.mongodb.com/manual/core/document/#document-query-filter)to the[Collection.find\(\)](http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#find)method:
+要查询 (select) 所有集合中的文档, 给 [Collection.find\(\)](http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#find) 方法传一个空的文档作为[查询过滤](https://docs.mongodb.com/manual/core/document/#document-query-filter):
 
-Copy
 
 ```js
 var cursor = db.collection('inventory').find({});
 ```
 
-To query for documents that match specific equality conditions, pass the[find\(\)](http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#find)method a[query filter document](https://docs.mongodb.com/manual/core/document/#document-query-filter)with the`<field>:<value>`of the desired documents. The following example selects from the`inventory`collection all documents where the`status`equals`"D"`:
+To query for documents that match specific equality conditions, pass the[find\(\)](http://mongodb.github.io/node-mongodb-native/2.2/api/Collection.html#find)method a[查询过滤](https://docs.mongodb.com/manual/core/document/#document-query-filter)with the`<field>:<value>`of the desired documents. The following example selects from the`inventory`collection all documents where the`status`equals`"D"`:
 
-Copy
 
 ```js
 var cursor = db.collection('inventory').find({ status: "D" });
 ```
 
-### Match an Embedded Document
+### 匹配嵌套内容
 
 Equality matches on the whole embedded document require an\_exact\_match of the specified`<value>`document, including the field order. For example, the following query selects all documents where the field`size`equals the document`{h:14,w:21,uom:"cm"}`:
 
-Copy
 
 ```js
 var cursor = db.collection('inventory').find({ 
@@ -154,11 +148,10 @@ var cursor = db.collection('inventory').find({
 });
 ```
 
-### Match a Field in an Embedded Document
+### 匹配嵌套文档中的一个字段
 
 The following example selects all documents where the field`uom`nested in the`size`field equals the string value`"in"`:
 
-Copy
 
 ```js
 var cursor = db.collection('inventory').find({ 
@@ -166,11 +159,10 @@ var cursor = db.collection('inventory').find({
 });
 ```
 
-### Match an Element in an Array
+### 匹配数组中的一个元素
 
 The following example queries for all documents where`tags`is an array that contains the string`"red"`as one of its elements:
 
-Copy
 
 ```js
 var cursor = db.collection('inventory').find({ 
@@ -178,11 +170,10 @@ var cursor = db.collection('inventory').find({
 });
 ```
 
-### Match an Array Exactly
+### 精确匹配一个数组
 
 The following example queries for all documents where the field`tags`value is an array with exactly two elements,`"red"`and`"blank"`, in the specified order:
 
-Copy
 
 ```js
 var cursor = db.collection('inventory').find({ 
@@ -190,11 +181,11 @@ var cursor = db.collection('inventory').find({
 });
 ```
 
-For more information and query examples, see[Query Documents](https://docs.mongodb.com/manual/tutorial/query-documents/#read-operations-queries)in the[CRUD](https://docs.mongodb.com/manual/crud/#crud)section.
+For more information and query examples, see[查询文档](https://docs.mongodb.com/manual/tutorial/query-documents/#read-operations-queries)in the[CRUD](https://docs.mongodb.com/manual/crud/#crud)section.
 
 To update or delete documents, see[Update Documents](https://docs.mongodb.com/manual/tutorial/update-documents/#write-op-update)and[Delete Documents](https://docs.mongodb.com/manual/tutorial/remove-documents/#write-op-delete).
 
-## Next Steps
+## 下一步
 
 Once you complete the Getting Started Guide, you may find the following course and topics useful:
 
