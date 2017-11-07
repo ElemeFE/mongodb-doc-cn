@@ -22,6 +22,6 @@
   * 混合索引
 * [安全](an-quan.md)
   * checklist
-* Replication
+* [Replication](replication.md)
 * Sharding
 
