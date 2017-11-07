@@ -2,12 +2,12 @@
 
 本页索引：
 
-* [Document Database](https://docs.mongodb.com/manual/introduction/#document-database)
-* [关键特性 Features](https://docs.mongodb.com/manual/introduction/#key-features)
+* [文档数据库](#文档数据库)
+* [关键特性](#关键特性)
 
-MongoDB is an open-source document database that provides high performance, high availability, and automatic scaling.
+MongoDB is an open-source 文档数据库 that provides high performance, high availability, and automatic scaling.
 
-## Document Database
+## 文档数据库
 
 A record in MongoDB is a document, which is a data structure composed of field and value pairs. MongoDB documents are similar to JSON objects. The values of fields may include other documents, arrays, and arrays of documents.
 
@@ -19,9 +19,9 @@ The advantages of using documents are:
 * Embedded documents and arrays reduce need for expensive joins.
 * Dynamic schema supports fluent polymorphism.
 
-## Key Features
+## 关键特性
 
-### High Performance
+### 高性能
 
 MongoDB provides high performance data persistence. In particular,
 
