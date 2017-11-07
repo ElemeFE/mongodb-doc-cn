@@ -39,7 +39,7 @@
   * 系统集合
   * 连接字符串 URI 格式
   * 核对
-  * MongoDB 写协议
+  * [MongoDB 写协议](reference/write-protocol.md)
   * 日志消息
   * 退出码和状态
   * 术语表
