@@ -1,8 +1,8 @@
 # Summary
 
 * [README](README.md)
-* [Mongodb 简介](./introduction/README.md)
-  * [Getting Started](./introduction/getting-started.md)
-* [Mongodb Shell](shell/README.md)
+* [简介](./introduction/README.md)
+  * [开始使用](./introduction/getting-started.md)
+* [Shell 工具](shell/README.md)
   * [配置](shell/configure.md)
 
