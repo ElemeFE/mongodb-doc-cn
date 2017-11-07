@@ -20,7 +20,8 @@
 * 索引
   * 单字段索引
   * 混合索引
-* 安全
+* [安全](an-quan.md)
   * checklist
 * Replication
 * Sharding
+
