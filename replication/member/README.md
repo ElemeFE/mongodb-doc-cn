@@ -50,17 +50,17 @@ MongoDB 的 _复制集_ 是一组 [`mongod`](https://docs.mongodb.com/manual/ref
 
 仲裁节点 **不存储** 数据, 也 **不能** 成为主节点. 副本集可以通过仲裁节点来[头片](https://docs.mongodb.com/manual/core/replica-set-elections/#replica-set-elections). 仲裁节点 _永远_ 有一个 `1` 选举票, 从而使得副本集可以拥有基数张票, 可以避免引入新的节点来投票的开销.
 
-> IMPORTANT
-> 
-> 不要在主节点或者从节点的系统上运行仲裁节点.
->
+
+> <div style="background-color: #fff2d5;">IMPORTANT <br>
+> 不要在主节点或者从节点的系统上运行仲裁节点. <br>
+> </div>
+
 
 要添加仲裁节点, 参见 [Add an arbiter to Replica Set](https://docs.mongodb.com/manual/tutorial/add-replica-set-arbiter/).
 
-> WARNING
-> 
-> 通常来说, 避免在每个副本集中部署超过一个仲裁节点.
->
+> <div style="background-color: #fae6e5;">WARNING <br>
+> 通常来说, 避免在每个副本集中部署超过一个仲裁节点. <br>
+> </div>
 
 对于以下 MongoDB 版本, 相比 `pv0` 中有仲裁节点的副本集而言 `pv1` 增加了 [`w:1`](https://docs.mongodb.com/manual/reference/write-concern/#writeconcern.<number>) 回滚的可能性:
 
