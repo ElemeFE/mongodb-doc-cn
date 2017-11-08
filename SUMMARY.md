@@ -5,7 +5,7 @@
   * [开始使用](introduction/getting-started.md)
   * [数据库 & 集合](introduction/db-and-collections.md)
     * [视图](introduction/views.md)
-    * [定长集合](introduction/capped-col.md)
+    * [封顶集合](introduction/capped-col.md)
   * [文档](introduction/document.md)
   * [BSON 类型](introduction/bson.md)
   * [比较/排序命令](introduction/comparison-sort-order.md)
