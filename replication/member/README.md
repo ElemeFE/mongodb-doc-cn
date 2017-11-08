@@ -1,34 +1,22 @@
 # Replica Set Members
 
-A_replica set_in MongoDB is a group of[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)processes that provide redundancy and high availability. The members of a replica set are:
+MongoDB 的 _复制集_ 是一组 [`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)进程实例, 提供了冗余和高可用性. 复制集的成员是:
 
-[Primary](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-primary-member)
+[主节点](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-primary-member).
 
-.
+&nbsp;&nbsp;&nbsp;&nbsp; 主节点接受所有的写操作.
 
-The primary receives all write operations.
+[从节点](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-secondary-members).
 
-[Secondaries](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-secondary-members)
+&nbsp;&nbsp;&nbsp;&nbsp; 从节点复现主节点的操作维护与其相同的数据集. 从节点可以配置用户一些特别的用途. 例如, 从节点可以是 [不投票的](https://docs.mongodb.com/manual/core/replica-set-elections/#replica-set-non-voting-members) 或者 [priority 0](https://docs.mongodb.com/manual/core/replica-set-priority-0-member/#replica-set-secondary-only-members).
 
-.
+你也可以在副本集中维护一个[仲裁节点](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-arbiters). 仲裁节点不复制数据. 但是, 当前主节点不可用时, 可以参与新的主节点的选举.
 
-Secondaries replicate operations from the primary to maintain an identical data set. Secondaries may have additional configurations for special usage profiles. For example, secondaries may be
+最小的副本集推荐形式为三个数据承载节点: 一个[主节点](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-primary-member)与两个[从节点](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-secondary-members). 你也可以替换为 _2_ 个数据承载节点: 一个[主](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-primary-member), 一个[从](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-secondary-members), 和一个[仲裁](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-arbiters)节点, 但是至少有三个数据承载节点可以提供更好的冗余.
 
-[non-voting](https://docs.mongodb.com/manual/core/replica-set-elections/#replica-set-non-voting-members)
+3.0.0 版本更新: 一个副本集可以最多 [50 个节点](https://docs.mongodb.com/manual/release-notes/3.0/#replica-sets-max-members) 但是至多 7 节点投票.[\[1\]](https://docs.mongodb.com/manual/core/replica-set-members/#master-slave) 之前的版本里, 副本集最多能有 12 个节点.
 
-or
-
-[priority 0](https://docs.mongodb.com/manual/core/replica-set-priority-0-member/#replica-set-secondary-only-members)
-
-.
-
-You can also maintain an[arbiter](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-arbiters)as part of a replica set. Arbiters do not keep a copy of the data. However, arbiters play a role in the elections that select a primary if the current primary is unavailable.
-
-The minimum recommended configuration for a replica set is a three member replica set with three data-bearing members: one[primary](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-primary-member)and two[secondary](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-secondary-members)members. You may alternatively deploy a three member replica set with_two_data-bearing members: a[primary](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-primary-member), a[secondary](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-secondary-members), and an[arbiter](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-arbiters), but replica sets with at least three data-bearing members offer better redundancy.
-
-Changed in version 3.0.0:A replica set can have up to[50 members](https://docs.mongodb.com/manual/release-notes/3.0/#replica-sets-max-members)but only 7 voting members.[\[1\]](https://docs.mongodb.com/manual/core/replica-set-members/#master-slave)In previous versions, replica sets can have up to 12 members.
-
-## Primary
+## 主节点
 
 The primary is the only member in the replica set that receives write operations. MongoDB applies write operations on the[primary](https://docs.mongodb.com/manual/reference/glossary/#term-primary)and then records the operations on the primary’s[oplog](https://docs.mongodb.com/manual/core/replica-set-oplog/).[Secondary](https://docs.mongodb.com/manual/core/replica-set-members/#replica-set-secondary-members)members replicate this log and apply the operations to their data sets.
 
@@ -40,7 +28,7 @@ All members of the replica set can accept read operations. However, by default, 
 
 The replica set can have at most one primary.[\[2\]](https://docs.mongodb.com/manual/core/replica-set-members/#edge-cases-2-primaries)If the current primary becomes unavailable, an election determines the new primary. See[Replica Set Elections](https://docs.mongodb.com/manual/core/replica-set-elections/)for more details.
 
-## Secondaries
+## 从节点
 
 A secondary maintains a copy of the[primary’s](https://docs.mongodb.com/manual/reference/glossary/#term-primary)data set. To replicate data, a secondary applies operations from the primary’s[oplog](https://docs.mongodb.com/manual/core/replica-set-oplog/)to its own data set in an asynchronous process. A replica set can have one or more secondaries.
 
@@ -66,15 +54,15 @@ You can configure a secondary member for a specific purpose. You can configure a
   [Delayed Replica Set Members](https://docs.mongodb.com/manual/core/replica-set-delayed-member/)
   .
 
-## Arbiter
+## 仲裁节点
 
-An arbiter does**not**have a copy of data set and**cannot**become a primary. Replica sets may have arbiters to add a vote in[elections for primary](https://docs.mongodb.com/manual/core/replica-set-elections/#replica-set-elections). Arbiters_always_have exactly`1`election vote, and thus allow replica sets to have an uneven number of voting members without the overhead of an additional member that replicates data.
+An 仲裁节点 does**not**have a copy of data set and**cannot**become a primary. Replica sets may have arbiters to add a vote in[elections for primary](https://docs.mongodb.com/manual/core/replica-set-elections/#replica-set-elections). Arbiters_always_have exactly`1`election vote, and thus allow replica sets to have an uneven number of voting members without the overhead of an additional member that replicates data.
 
 IMPORTANT
 
-Do not run an arbiter on systems that also host the primary or the secondary members of the replica set.
+Do not run an 仲裁节点 on systems that also host the primary or the secondary members of the replica set.
 
-To add an arbiter, see[Add an Arbiter to Replica Set](https://docs.mongodb.com/manual/tutorial/add-replica-set-arbiter/).
+To add an 仲裁节点, see[Add an 仲裁节点 to Replica Set](https://docs.mongodb.com/manual/tutorial/add-replica-set-arbiter/).
 
 WARNING
 
