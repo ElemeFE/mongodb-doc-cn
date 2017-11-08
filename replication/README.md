@@ -57,7 +57,7 @@ MongoDB 的 _复制集_ 是一组维护同样数据的 [`mongod`](https://docs.m
 
 默认情况下, 客户端从主节点 [\[1\]](#edge-cases-2-primaries) 读取数据; 然而, 客户端可用通过 [read preference](https://docs.mongodb.com/manual/core/read-preference/) 来指定对从节点进行读操作. 不过由于[异步复制](#asynchronous-replication) 的原因从节点读取数据存在延迟的情况 (数据尚未同步到从节点). 更多信息可以参见 [Read Preference](https://docs.mongodb.com/manual/core/read-preference/).
 
-In MongoDB, clients can see the results of writes before the writes are[durable](https://docs.mongodb.com/manual/reference/glossary/#term-durable):
+In MongoDB, clients can see the results of writes before the writes are [durable](https://docs.mongodb.com/manual/reference/glossary/#term-durable):
 
 * Regardless of [write concern](https://docs.mongodb.com/manual/reference/write-concern/) , other clients using [`"local"`](https://docs.mongodb.com/manual/reference/read-concern/#readconcern."local") \(i.e. the default\) readConcern can see the result of a write operation before the write operation is acknowledged to the issuing client.
 * Clients using [`"local"`](https://docs.mongodb.com/manual/reference/read-concern/#readconcern."local") \(i.e. the default\) readConcern can read data which may be subsequently [rolled back](https://docs.mongodb.com/manual/core/replica-set-rollbacks/) .
