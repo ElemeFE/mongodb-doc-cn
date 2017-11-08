@@ -21,7 +21,7 @@ MongoDB 的 _复制集_ 是一组维护同样数据的 [`mongod`](https://docs.m
 
 副本集是维护同样数据的一组 [`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod) 实例. 副本集包含多个数据承载节点和可选的一个仲裁节点. 在数据承载节点中, 只有一个成员被认为是主节点, 而其他节点被认为是从节点.
 
-[主节点](https://docs.mongodb.com/manual/core/replica-set-primary/)接收所有的写操作. 一个副本集只能有一个主节点来确通过 [`{w:"majority"}`](https://docs.mongodb.com/manual/reference/write-concern/#writeconcern."majority") 确认写操作; 尽管在某些情况下, 另一个 mongod 实例可能暂时认为自己也是主节点.  [\[1\]](#edge-cases-2-primaries) 主节点会将所有的数据变化记录在它的操作日志中, 即 [oplog](https://docs.mongodb.com/manual/core/replica-set-oplog/). 有关主节点操作的更多信息, 请参见 [Replica Set Primary](https://docs.mongodb.com/manual/core/replica-set-primary/).
+[主节点](https://docs.mongodb.com/manual/core/replica-set-primary/)接收所有的写操作. 一个副本集只能有一个主节点来确通过 [`{w:"majority"}`](https://docs.mongodb.com/manual/reference/write-concern/#writeconcern. "majority") 确认写操作; 尽管在某些情况下, 另一个 mongod 实例可能暂时认为自己也是主节点.  [\[1\]](#edge-cases-2-primaries) 主节点会将所有的数据变化记录在它的操作日志中, 即 [oplog](https://docs.mongodb.com/manual/core/replica-set-oplog/). 有关主节点操作的更多信息, 请参见 [Replica Set Primary](https://docs.mongodb.com/manual/core/replica-set-primary/).
 
 ![](https://docs.mongodb.com/manual/_images/replica-set-read-write-operations-primary.bakedsvg.svg "Diagram of default routing of reads and writes to the primary.")
 
