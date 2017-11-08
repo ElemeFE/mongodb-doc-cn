@@ -55,12 +55,12 @@ MongoDB 的 _复制集_ 是一组维护同样数据的 [`mongod`](https://docs.m
 
 ## 读操作
 
-默认情况下, 客户端从主节点 [\[1\]](#edge-cases-2-primaries) 读取数据; 然而, 客户端可用通过 [read preference](https://docs.mongodb.com/manual/core/read-preference/) 来指定对从节点进行读操作. 不过由于[异步复制](#asynchronous-replication) 的原因从节点读取数据存在延迟的情况 (数据尚未同步到从节点). 更多信息可以参见 [Read Preference](https://docs.mongodb.com/manual/core/read-preference/).
+默认情况下, 客户端从主节点 [\[1\]](#edge-cases-2-primaries) 读取数据; 然而, 客户端可用通过 [read preference](https://docs.mongodb.com/manual/core/read-preference/) 来指定对从节点进行读操作. 不过由于[异步复制](#asynchronous-replication) 的原因从节点读取数据存在延迟的情况 \(数据尚未同步到从节点\). 更多信息可以参见 [Read Preference](https://docs.mongodb.com/manual/core/read-preference/).
 
 In MongoDB, clients can see the results of writes before the writes are [durable](https://docs.mongodb.com/manual/reference/glossary/#term-durable):
 
-* Regardless of [write concern](https://docs.mongodb.com/manual/reference/write-concern/) , other clients using [`"local"`](https://docs.mongodb.com/manual/reference/read-concern/#readconcern."local") \(i.e. the default\) readConcern can see the result of a write operation before the write operation is acknowledged to the issuing client.
-* Clients using [`"local"`](https://docs.mongodb.com/manual/reference/read-concern/#readconcern."local") \(i.e. the default\) readConcern can read data which may be subsequently [rolled back](https://docs.mongodb.com/manual/core/replica-set-rollbacks/) .
+* Regardless of [write concern](https://docs.mongodb.com/manual/reference/write-concern/) , other clients using \[`"local"`\]\([https://docs.mongodb.com/manual/reference/read-concern/\#readconcern."local](https://docs.mongodb.com/manual/reference/read-concern/#readconcern."local)"\) \(i.e. the default\) readConcern can see the result of a write operation before the write operation is acknowledged to the issuing client.
+* Clients using \[`"local"`\]\([https://docs.mongodb.com/manual/reference/read-concern/\#readconcern."local](https://docs.mongodb.com/manual/reference/read-concern/#readconcern."local)"\) \(i.e. the default\) readConcern can read data which may be subsequently [rolled back](https://docs.mongodb.com/manual/core/replica-set-rollbacks/) .
 
 For more information on read isolations, consistency and recency for MongoDB, see [Read Isolation, Consistency, and Recency](https://docs.mongodb.com/manual/core/read-isolation-consistency-recency/).
 
@@ -70,9 +70,5 @@ For more information on read isolations, consistency and recency for MongoDB, se
 
 更多信息参见 [Priority 0 副本集节点](https://docs.mongodb.com/manual/core/replica-set-priority-0-member/#replica-set-secondary-only-members), [隐藏副本集节点](https://docs.mongodb.com/manual/core/replica-set-hidden-member/#replica-set-hidden-members)和[延迟副本集节点](https://docs.mongodb.com/manual/core/replica-set-delayed-member/#replica-set-delayed-members).
 
-| \[1\] | _\(_[_1_](#id1)_,_[_2_](#id3)_\)_In[some circumstances](https://docs.mongodb.com/manual/reference/read-preference/#edge-cases), two nodes in a replica set may_transiently_believe that they are the primary, but at most, one of them will be able to complete writes with[`{w:"majority"}`](https://docs.mongodb.com/manual/reference/write-concern/#writeconcern."majority")write concern. The node that can complete[`{w:"majority"}`](https://docs.mongodb.com/manual/reference/write-concern/#writeconcern."majority")writes is the current primary, and the other node is a former primary that has not yet recognized its demotion, typically due to a[network partition](https://docs.mongodb.com/manual/reference/glossary/#term-network-partition). When this occurs, clients that connect to the former primary may observe stale data despite having requested read preference[`primary`](https://docs.mongodb.com/manual/reference/read-preference/#primary), and new writes to the former primary will eventually roll back. |
-| :--- | :--- |
-
-
-
+\[1\]  _\(_[_1_](https://docs.mongodb.com/manual/replication/#id1)_,_[_2_](https://docs.mongodb.com/manual/replication/#id3)_\) _In [some circumstances](https://docs.mongodb.com/manual/reference/read-preference/#edge-cases), two nodes in a replica set may _transiently _believe that they are the primary, but at most, one of them will be able to complete writes with [`{w:"majority"}`](https://docs.mongodb.com/manual/reference/write-concern/#writeconcern."majority") write concern. The node that can complete [`{w:"majority"}`](https://docs.mongodb.com/manual/reference/write-concern/#writeconcern."majority") writes is the current primary, and the other node is a former primary that has not yet recognized its demotion, typically due to a [network partition](https://docs.mongodb.com/manual/reference/glossary/#term-network-partition). When this occurs, clients that connect to the former primary may observe stale data despite having requested read preference[`primary`](https://docs.mongodb.com/manual/reference/read-preference/#primary), and new writes to the former primary will eventually roll back.
 
