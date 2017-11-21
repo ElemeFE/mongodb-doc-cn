@@ -1,118 +1,106 @@
-# MongoDB Wire Protocol
+# MongoDB 通信协议
 
-On this page
+* [简介](#简介)
+* [TCP/IP套接字](#套接字)
+* [报文类型格式](#报文类型格式)
+* [标准报文头](#标准报文头)
+* [客户端请求报文](#客户端请求报文)
+* [数据库响应报文](#数据库响应报文)
 
-* [Introduction](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#introduction)
-* [TCP/IP Socket](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#tcp-ip-socket)
-* [Messages Types and Formats](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#messages-types-and-formats)
-* [Standard Message Header](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#standard-message-header)
-* [Client Request Messages](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#client-request-messages)
-* [Database Response Messages](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#database-response-messages)
+## 简介
 
-## Introduction
+MongoDB 通信协议是简单的基于套接字的请求响应风格的协议。客户端和数据库服务器通过长连接的 TCP/IP 套接字来进行交互。
 
-The MongoDB Wire Protocol is a simple socket-based, request-response style protocol. Clients communicate with the database server through a regular TCP/IP socket.
+## 套接字
 
-## TCP/IP Socket
+客户端通过长连接的 TCP/IP 套接字来与数据库连接，没有连接握手阶段。
 
-Clients should connect to the database with a regular TCP/IP socket. There is no connection handshake.
+### 端口
 
-### Port
+[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)和[`mongos`](https://docs.mongodb.com/manual/reference/program/mongos/#bin.mongos)进程默认端口号为 27017，此外端口是可以配置修改的。
 
-The default port number for[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)and[`mongos`](https://docs.mongodb.com/manual/reference/program/mongos/#bin.mongos)instances is 27017. The port number for[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)and[`mongos`](https://docs.mongodb.com/manual/reference/program/mongos/#bin.mongos)is configurable and may vary.
-
-### Byte Ordering
+### 字节序
 
 All data in the MongoDB wire protocol is little-endian.
+MongoDB 通信协议的数据采用小端[`字节序`](https://zh.wikipedia.org/wiki/%E5%AD%97%E8%8A%82%E5%BA%8F#.E5.B0.8F.E7.AB.AF.E5.BA.8F)。
 
-## Messages Types and Formats
+## 报文类型格式
 
-There are two types of messages, client requests and database responses.
+报文类型有两种，客户端请求和数据库响应。
 
-NOTE
+注解
 
-* This page uses a C-like
-  `struct`
-  to describe the message structure.
-* The types used in this document \(
+* 本文使用 C 语言风格的结构体来描述报文格式。
+* 文档中使用的类型如 \(
   `cstring`
   ,
   `int32`
-  , etc.\) are the same as those defined in the
-  [BSON specification](http://bsonspec.org/#/specification)
+  , 等.\) 对应于[BSON 类型说明](http://bsonspec.org/#/specification)中的数据类型格式
   .
-* To denote repetition, the document uses the asterisk notation from the
-  [BSON specification](http://bsonspec.org/#/specification)
-  . For example,
-  `int64*`
-  indicates that one or more of the specified type can be written to the socket, one after another.
-* The standard message header is typed as
-  `MsgHeader`
-  . Integer constants are in capitals \(e.g.
-  `ZERO`
-  for the integer value of 0\).
+* 文档中使用星号表示法来表示重复，例如 int64* 表示一个或多个 int64 类型（具体可见[BSON 类型说明](http://bsonspec.org/#/specification)）可以被一个接一个的往套接字中写入。
+* 本文将标准头部命名为 `MsgHeader`。整型常量使用大写字母表示 (例如，`ZERO` 表示整型值 0)。
 
-## Standard Message Header
+## 标准报文头
 
-In general, each message consists of a standard message header followed by request-specific data. The standard message header is structured as follows:
+一般来说，每个消息包含一个标准的消息头紧随其后的是特定数据。标准的消息头的结构如下:
 
 ```c
 struct MsgHeader {
-    int32   messageLength; // total message size, including this
-    int32   requestID;     // identifier for this message
-    int32   responseTo;    // requestID from the original request
-                           //   (used in responses from db)
-    int32   opCode;        // request type - see table below
+    int32   messageLength; // 总报文大小，包含本字段
+    int32   requestID;     // 报文标识 ID
+    int32   responseTo;    // 数据库响应报文标识 ID，和 requestID 一样，
+                           // 表明响应回该 requestID 对应的请求
+    int32   opCode;        // 请求类型 - 具体参照下表
 }
 ```
 
-| Field | Description |
+| 字段 | 描述 |
 | :--- | :--- |
-| `messageLength` | The total size of the message in bytes. This total includes the 4 bytes that holds the message length. |
-| `requestID` | A client or database-generated identifier that uniquely identifies this message. For the case of client-generated messages \(e.g.[OP\_QUERY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-query)and[OP\_GET\_MORE](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-get-more)\), it will be returned in the`responseTo`field of the[OP\_REPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply)message. Clients can use the`requestID`and the`responseTo`fields to associate query responses with the originating query. |
-| `responseTo` | In the case of a message from the database, this will be the`requestID`taken from the[OP\_QUERY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-query)or[OP\_GET\_MORE](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-get-more)messages from the client. Clients can use the`requestID`and the`responseTo`fields to associate query responses with the originating query. |
-| `opCode` | Type of message. See[Request Opcodes](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-request-opcodes). |
+| `messageLength` | 报文总长度，使用 4 个字节表示。 |
+| `requestID` | 由客户端或服务器生成的报文唯一标识。 例如客户端请求 \([OP\_QUERY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-query) 和 [OP\_GET\_MORE](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-get-more)\), 将返回 [OP\_REPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply) 报文给 `responseTo` 字段表示的请求. 客户端可以使用 `requestID` 和 `responseTo` 字段关联查询响应到原始请求上。 |
+| `responseTo` | 服务端响应使用此字段关联到 `requestID` 对应的查询请求上。|
+| `opCode` | 报文类型，详情见 [请求操作码](#请求操作码)。 |
 
-### Request Opcodes
+### 请求操作码
 
-NOTE
+注释
 
-Starting with MongoDB 2.6 and[`maxWireVersion`](https://docs.mongodb.com/manual/reference/command/isMaster/#isMaster.maxWireVersion)`3`, MongoDB drivers use the[database commands](https://docs.mongodb.com/manual/reference/command/#collection-commands)[`insert`](https://docs.mongodb.com/manual/reference/command/insert/#dbcmd.insert),[`update`](https://docs.mongodb.com/manual/reference/command/update/#dbcmd.update), and[`delete`](https://docs.mongodb.com/manual/reference/command/delete/#dbcmd.delete)instead of`OP_INSERT`,`OP_UPDATE`, and`OP_DELETE`for acknowledged writes. Most drivers continue to use opcodes for unacknowledged writes.
+自 MongoDB 2.6 和[`maxWireVersion`](https://docs.mongodb.com/manual/reference/command/isMaster/#isMaster.maxWireVersion) `3`, MongoDB 驱动使用[数据库命令](https://docs.mongodb.com/manual/reference/command/#collection-commands)[`insert`](https://docs.mongodb.com/manual/reference/command/insert/#dbcmd.insert),[`update`](https://docs.mongodb.com/manual/reference/command/update/#dbcmd.update), 和[`delete`](https://docs.mongodb.com/manual/reference/command/delete/#dbcmd.delete)方式代替 `OP_INSERT`,`OP_UPDATE`, 和`OP_DELETE`操作码方式。许多驱动仍然在使用操作码方式。
 
-IMPORTANT
+重点
 
-`OP_COMMAND`and`OP_COMMANDREPLY`are cluster internal and should not be implemented by clients or drivers.
+`OP_COMMAND` 和 `OP_COMMANDREPLY` 是集群内部操作命令，不需要实现。
 
-The`OP_COMMAND`and`OP_COMMANDREPLY`format and protocol are not stable and may change between releases without maintaining backwards compatibility.
+`OP_COMMAND` 和 `OP_COMMANDREPLY` 操作协议格式是非固定的，不支持向后兼容。
 
-The following are the supported`opCode`:
+协议支持的 `操作码 (Opcode)` 如下:
 
-| Opcode Name | Value | Comment |
+| 操作码 (Opcode) 名 | 值 | 注解 |
 | :--- | :--- | :--- |
-| `OP_REPLY` | 1 | Reply to a client request.`responseTo`is set. |
-| `OP_UPDATE` | 2001 | Update document. |
-| `OP_INSERT` | 2002 | Insert new document. |
-| `RESERVED` | 2003 | Formerly used for OP\_GET\_BY\_OID. |
-| `OP_QUERY` | 2004 | Query a collection. |
-| `OP_GET_MORE` | 2005 | Get more data from a query. See Cursors. |
-| `OP_DELETE` | 2006 | Delete documents. |
-| `OP_KILL_CURSORS` | 2007 | Notify database that the client has finished with the cursor. |
-| `OP_COMMAND` | 2010 | Cluster internal protocol representing a command request. |
-| `OP_COMMANDREPLY` | 2011 | Cluster internal protocol representing a reply to an`OP_COMMAND`. |
+| `OP_REPLY` | 1 | 客户端请求回复。此操作 `responseTo` 会被设置为对应的 `requestID` 值。 |
+| `OP_UPDATE` | 2001 | 更新文档。 |
+| `OP_INSERT` | 2002 | 插入新文档。 |
+| `RESERVED` | 2003 | 保留操作，以前用于 OP\_GET\_BY\_OID。 |
+| `OP_QUERY` | 2004 | 集合查询操作。 |
+| `OP_GET_MORE` | 2005 | OP_QUERY 后获取更多信息的后续操作。 详情见游标 (cursor)。 |
+| `OP_DELETE` | 2006 | 删除文档。 |
+| `OP_KILL_CURSORS` | 2007 | 用于通知数据库客户端游标已经操作完成，需销毁。 |
+| `OP_COMMAND` | 2010 | 集群内部请求命令操作。 |
+| `OP_COMMANDREPLY` | 2011 | 集群内部请求命令 `OP_COMMAND` 的响应。 |
 
-## Client Request Messages
+## 客户端请求报文
 
-Clients can send request messages that specify all but the[OP\_REPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply)opCode.[OP\_REPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply)is reserved for use by the database.
+客户端可以发送指定除[OP\_REPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply)opCode以外的所有请求消息。[OP\_REPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply)被保留供数据库使用。
 
-Only the[OP\_QUERY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-query)and[OP\_GET\_MORE](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-get-more)messages result in a response from the database. There will be no response sent for any other message.
+只有[OP\_QUERY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-query)和[OP\_GET\_MORE](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-get-more)消息导致数据库的响应。将不会有任何其他消息发送回应。
 
-You can determine if a message was successful with a getLastError command.
+您可以使用getLastError命令确定消息是否成功。
 
 ### OP\_UPDATE
 
-The OP\_UPDATE message is used to update a document in a collection. The format of a OP\_UPDATE message is the following:
+OP\_UPDATE消息用于更新集合中的文档。OP\_UPDATE消息的格式如下：
 
-```c
+```
 struct OP_UPDATE {
     MsgHeader header;             // standard message header
     int32     ZERO;               // 0 - reserved for future use
@@ -123,22 +111,22 @@ struct OP_UPDATE {
 }
 ```
 
-| Field | Description |
+| 字段 | 描述 |
 | :--- | :--- |
-| `header` | Message header, as described in[Standard Message Header](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header). |
-| `ZERO` | Integer value of 0. Reserved for future use. |
-| `fullCollectionName` | The full collection name; i.e. namespace. The full collection name is the concatenation of the database name with the collection name, using a`.`for the concatenation. For example, for the database`foo`and the collection`bar`, the full collection name is`foo.bar`. |
-| `flags` | Bit vector to specify flags for the operation. The bit values correspond to the following:`0`corresponds to Upsert. If set, the database will insert the supplied object into the collection if no matching document is found.`1`corresponds to MultiUpdate.If set, the database will update all matching objects in the collection. Otherwise only updates first matching document.`2`-`31`are reserved. Must be set to 0. |
-| `selector` | BSON document that specifies the query for selection of the document to update. |
-| `update` | BSON document that specifies the update to be performed. For information on specifying updates see the[Update Operations](https://docs.mongodb.com/manual/applications/update)documentation from the MongoDB Manual. |
+| `header` | 消息头，如[标准消息头中所述](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header)。 |
+| `ZERO` | 整数值为0.保留以备将来使用。 |
+| `fullCollectionName` | 完整的集合名称;即命名空间。完整的集合名称是数据库名称与集合名称`.`的拼接，使用一个for concatenation。例如，对于数据库`foo`和集合`bar`，完整的集合名称是`foo.bar`。 |
+| `flags` | 位矢量指定操作的标志。位值对应于以下内容：`0`对应于Upsert。如果设置，如果没有找到匹配的文档，数据库将把提供的对象插入到集合中。`1`对应于MultiUpdate.If设置，数据库将更新集合中的所有匹配对象。否则只更新第一个匹配的文件。`2`-`31`保留。必须设置为0。 |
+| `selector` | BSON文档，指定要更新的文档的选择查询。 |
+| `update` | BSON文档，指定要执行的更新。有关指定更新的信息，请参阅MongoDB手册中的[更新操作](https://docs.mongodb.com/manual/applications/update)文档。 |
 
-There is no response to an OP\_UPDATE message.
+没有对OP\_UPDATE消息的响应。
 
 ### OP\_INSERT
 
-The OP\_INSERT message is used to insert one or more documents into a collection. The format of the OP\_INSERT message is
+OP\_INSERT消息用于将一个或多个文档插入到集合中。OP\_INSERT消息的格式是
 
-```c
+```
 struct {
     MsgHeader header;             // standard message header
     int32     flags;              // bit vector - see below
@@ -147,20 +135,20 @@ struct {
 }
 ```
 
-| Field | Description |
+| 字段 | 描述 |
 | :--- | :--- |
-| `header` | Message header, as described in[Standard Message Header](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header). |
-| `flags` | Bit vector to specify flags for the operation. The bit values correspond to the following:`0`corresponds to ContinueOnError. If set, the database will not stop processing a bulk insert if one fails \(eg due to duplicate IDs\). This makes bulk insert behave similarly to a series of single inserts, except lastError will be set if any insert fails, not just the last one. If multiple errors occur, only the most recent will be reported by getLastError. \(new in 1.9.1\)`1`-`31`are reserved. Must be set to 0. |
-| `fullCollectionName` | The full collection name; i.e. namespace. The full collection name is the concatenation of the database name with the collection name, using a`.`for the concatenation. For example, for the database`foo`and the collection`bar`, the full collection name is`foo.bar`. |
-| `documents` | One or more documents to insert into the collection. If there are more than one, they are written to the socket in sequence, one after another. |
+| `header` | 消息头，如[标准消息头中所述](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header)。 |
+| `flags` | 位矢量指定操作的标志。位值对应于以下内容：`0`对应于ContinueOnError。如果设置，数据库将不会停止处理批量插入，如果一个失败（例如由于重复的ID）。这使得批量插入的行为与一系列单个插入行为类似，只是如果任何插入失败，将会设置lastError，而不仅仅是最后一个。如果发生多个错误，则只有最近一次将由getLastError报告。（1.9.1新增）`1`-`31`保留。必须设置为0。 |
+| `fullCollectionName` | 完整的集合名称;即命名空间。完整的集合名称是数据库名称与集合名称`.`的拼接，使用一个for concatenation。例如，对于数据库`foo`和集合`bar`，完整的集合名称是`foo.bar`。 |
+| `documents` | 一个或多个要插入到集合中的文档。如果有多个，它们会依次写入到插槽中。 |
 
-There is no response to an OP\_INSERT message.
+对OP\_INSERT消息没有响应。
 
 ### OP\_QUERY
 
-The OP\_QUERY message is used to query the database for documents in a collection. The format of the OP\_QUERY message is:
+OP\_QUERY消息用于在数据库中查询集合中的文档。OP\_QUERY消息的格式是：
 
-```c
+```
 struct OP_QUERY {
     MsgHeader header;                 // standard message header
     int32     flags;                  // bit vector of query options.  See below for details.
@@ -174,23 +162,23 @@ struct OP_QUERY {
 }
 ```
 
-| Field | Description |
+| 字段 | 描述 |
 | :--- | :--- |
-| `header` | Message header, as described in[Standard Message Header](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header). |
-| `flags` | Bit vector to specify flags for the operation. The bit values correspond to the following:`0`is reserved. Must be set to 0.`1`corresponds to TailableCursor. Tailable means cursor is not closed when the last data is retrieved. Rather, the cursor marks the final object’s position. You can resume using the cursor later, from where it was located, if more data were received. Like any “latent cursor”, the cursor may become invalid at some point \(CursorNotFound\) – for example if the final object it references were deleted.`2`corresponds to SlaveOk.Allow query of replica slave. Normally these return an error except for namespace “local”.`3`corresponds to OplogReplay. Internal replication use only - driver should not set.`4`corresponds to NoCursorTimeout. The server normally times out idle cursors after an inactivity period \(10 minutes\) to prevent excess memory use. Set this option to prevent that.`5`corresponds to AwaitData. Use with TailableCursor. If we are at the end of the data, block for a while rather than returning no data. After a timeout period, we do return as normal.`6`corresponds to Exhaust. Stream the data down full blast in multiple “more” packages, on the assumption that the client will fully read all data queried. Faster when you are pulling a lot of data and know you want to pull it all down. Note: the client is not allowed to not read all the data unless it closes the connection.`7`corresponds to Partial. Get partial results from a mongos if some shards are down \(instead of throwing an error\)`8`-`31`are reserved. Must be set to 0. |
-| `fullCollectionName` | The full collection name; i.e. namespace. The full collection name is the concatenation of the database name with the collection name, using a`.`for the concatenation. For example, for the database`foo`and the collection`bar`, the full collection name is`foo.bar`. |
-| `numberToSkip` | Sets the number of documents to omit - starting from the first document in the resulting dataset - when returning the result of the query. |
-| `numberToReturn` | Limits the number of documents in the first[OP\_REPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply)message to the query. However, the database will still establish a cursor and return the`cursorID`to the client if there are more results than`numberToReturn`. If the client driver offers ‘limit’ functionality \(like the SQL LIMIT keyword\), then it is up to the client driver to ensure that no more than the specified number of document are returned to the calling application. If`numberToReturn`is`0`, the db will use the default return size. If the number is negative, then the database will return that number and close the cursor. No further results for that query can be fetched. If`numberToReturn`is`1`the server will treat it as`-1`\(closing the cursor automatically\). |
-| `query` | BSON document that represents the query. The query will contain one or more elements, all of which must match for a document to be included in the result set. Possible elements include`$query`,`$orderby`,`$hint`,`$explain`, and`$snapshot`. |
-| `returnFieldsSelector` | Optional. BSON document that limits the fields in the returned documents. The`returnFieldsSelector`contains one or more elements, each of which is the name of a field that should be returned, and and the integer value`1`. In JSON notation, a`returnFieldsSelector`to limit to the fields`a`,`b`and`c`would be:{a:1,b:1,c:1} |
+| `header` | 消息头，如[标准消息头中所述](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header)。 |
+| `flags` | 位矢量指定操作的标志。位值对应于以下内容：`0`被预定了。必须设置为0。`1`对应于TailableCursor。Tailable表示当检索到最后一个数据时光标未关闭。而是光标标记最终对象的位置。如果收到更多的数据，可以稍后再从光标所在的位置继续使用光标。像任何“潜在游标”一样，游标可能在某个点（CursorNotFound）变成无效 - 例如，如果它引用的最终对象被删除。`2`对应于SlaveOk.Allow查询副本从属。通常这些返回一个错误，除了名字空间“本地”。`3`对应于OplogReplay。仅使用内部复制 - 不应设置驱动程序。`4`对应于NoCursorTimeout。闲置时间（10分钟）后，服务器通常超时闲置游标以防止使用过多内存。设置这个选项来防止这个。`5`对应于AwaitData。与TailableCursor一起使用。如果我们在数据的末尾，阻塞一段时间，而不是没有返回任何数据。超时后，我们照常返回。`6`对应于排气。假设客户端将完全读取所有查询的数据，将数据全部流式传输到多个“更多”包中。当你拉大量的数据，并知道你想把这一切拉下来，更快。注意：除非关闭连接，否则不允许客户端读取所有数据。`7`对应于部分。如果一些碎片落下（而不是抛出错误），从蒙哥马斯获得部分结果`8`-`31`保留。必须设置为0。 |
+| `fullCollectionName` | 完整的集合名称;即命名空间。完整的集合名称是数据库名称与集合名称`.`的拼接，使用一个for concatenation。例如，对于数据库`foo`和集合`bar`，完整的集合名称是`foo.bar`。 |
+| `numberToSkip` | 当返回查询结果时，设置要省略的文档数量 - 从结果数据集中的第一个文档开始。 |
+| `numberToReturn` | 将第一个[OP\_REPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply)消息中的文档数限制为查询。但是，`cursorID`如果有更多的结果，数据库仍然会建立一个游标并返回给客户端`numberToReturn`。如果客户端驱动程序提供“限制”功能（如SQL LIMIT关键字），则由客户端驱动程序确保不超过指定数量的文档返回给调用应用程序。如果`numberToReturn`是`0`，数据库将使用默认的返回大小。如果数字是负数，那么数据库将返回该数字并关闭游标。该查询没有进一步的结果可以获取。如果`numberToReturn`是`1`服务器将把它作为`-1`（后自动关闭游标）。 |
+| `query` | 表示查询的BSON文档。查询将包含一个或多个元素，所有这些元素都必须与要包含在结果集中的文档匹配。可能的因素包括`$query`，`$orderby`，`$hint`，`$explain`，和`$snapshot`。 |
+| `returnFieldsSelector` | 可选的。BSON文件，限制返回的文件中的字段。所述`returnFieldsSelector`含有一种或多种元素，其中的每一个是应返回字段的名称，以及整数值`1`。在JSON符号，一个`returnFieldsSelector`限制的字段`a`，`b`并且`c`将是：{ a ：1 ，b ：1 ，c ：1 } |
 
-The database will respond to an OP\_QUERY message with an[OP\_REPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply)message.
+数据库将用OP\_REPLY消息响应[OP\_QUERY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply)消息。
 
 ### OP\_GET\_MORE
 
-The OP\_GET\_MORE message is used to query the database for documents in a collection. The format of the OP\_GET\_MORE message is:
+OP\_GET\_MORE消息用于在数据库中查询集合中的文档。OP\_GET\_MORE消息的格式是：
 
-```c
+```
 struct {
     MsgHeader header;             // standard message header
     int32     ZERO;               // 0 - reserved for future use
@@ -200,21 +188,21 @@ struct {
 }
 ```
 
-| Field | Description |
+| 字段 | 描述 |
 | :--- | :--- |
-| `header` | Message header, as described in[Standard Message Header](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header). |
-| `ZERO` | Integer value of 0. Reserved for future use. |
-| `fullCollectionName` | The full collection name; i.e. namespace. The full collection name is the concatenation of the database name with the collection name, using a`.`for the concatenation. For example, for the database`foo`and the collection`bar`, the full collection name is`foo.bar`. |
-| `numberToReturn` | Limits the number of documents in the first[OP\_REPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply)message to the query. However, the database will still establish a cursor and return the`cursorID`to the client if there are more results than`numberToReturn`. If the client driver offers ‘limit’ functionality \(like the SQL LIMIT keyword\), then it is up to the client driver to ensure that no more than the specified number of document are returned to the calling application. If`numberToReturn`is`0`, the db will used the default return size. |
-| `cursorID` | Cursor identifier that came in the[OP\_REPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply). This must be the value that came from the database. |
+| `header` | 消息头，如[标准消息头中所述](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header)。 |
+| `ZERO` | 整数值为0.保留以备将来使用。 |
+| `fullCollectionName` | 完整的集合名称;即命名空间。完整的集合名称是数据库名称与集合名称`.`的拼接，使用一个for concatenation。例如，对于数据库`foo`和集合`bar`，完整的集合名称是`foo.bar`。 |
+| `numberToReturn` | 将第一个[OP\_REPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply)消息中的文档数限制为查询。但是，`cursorID`如果有更多的结果，数据库仍然会建立一个游标并返回给客户端`numberToReturn`。如果客户端驱动程序提供了“限制”功能（如SQL LIMIT关键字），则由客户端驱动程序确保不超过指定数量的文档返回给调用应用程序。如果`numberToReturn`是`0`，数据库将使用默认的返回大小。 |
+| `cursorID` | 光标标识符出现在[OP\_REPLY中](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply)。这必须是来自数据库的值。 |
 
-The database will respond to an OP\_GET\_MORE message with an[OP\_REPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply)message.
+数据库将用OP\_REPLY消息响应[OP\_GET\_MORE](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply)消息。
 
 ### OP\_DELETE
 
-The OP\_DELETE message is used to remove one or more documents from a collection. The format of the OP\_DELETE message is:
+OP\_DELETE消息用于从集合中删除一个或多个文档。OP\_DELETE消息的格式是：
 
-```c
+```
 struct {
     MsgHeader header;             // standard message header
     int32     ZERO;               // 0 - reserved for future use
@@ -224,21 +212,21 @@ struct {
 }
 ```
 
-| Field | Description |
+| 字段 | 描述 |
 | :--- | :--- |
-| `header` | Message header, as described in[Standard Message Header](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header). |
-| `ZERO` | Integer value of 0. Reserved for future use. |
-| `fullCollectionName` | The full collection name; i.e. namespace. The full collection name is the concatenation of the database name with the collection name, using a`.`for the concatenation. For example, for the database`foo`and the collection`bar`, the full collection name is`foo.bar`. |
-| `flags` | Bit vector to specify flags for the operation. The bit values correspond to the following:`0`corresponds to SingleRemove. If set, the database will remove only the first matching document in the collection. Otherwise all matching documents will be removed.`1`-`31`are reserved. Must be set to 0. |
-| `selector` | BSON document that represent the query used to select the documents to be removed. The selector will contain one or more elements, all of which must match for a document to be removed from the collection. |
+| `header` | 消息头，如[标准消息头中所述](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header)。 |
+| `ZERO` | 整数值为0.保留以备将来使用。 |
+| `fullCollectionName` | 完整的集合名称;即命名空间。完整的集合名称是数据库名称与集合名称`.`的拼接，使用一个for concatenation。例如，对于数据库`foo`和集合`bar`，完整的集合名称是`foo.bar`。 |
+| `flags` | 位矢量指定操作的标志。位值对应于以下内容：`0`对应于SingleRemove。如果设置，数据库将只删除集合中第一个匹配的文档。否则，所有匹配的文件将被删除。`1`-`31`保留。必须设置为0。 |
+| `selector` | 代表用于选择要删除的文档的查询的BSON文档。选择器将包含一个或多个元素，所有这些元素都必须与要从集合中移除的文档匹配。 |
 
-There is no response to an OP\_DELETE message.
+没有响应OP\_DELETE消息。
 
 ### OP\_KILL\_CURSORS
 
-The OP\_KILL\_CURSORS message is used to close an active cursor in the database. This is necessary to ensure that database resources are reclaimed at the end of the query. The format of the OP\_KILL\_CURSORS message is:
+OP\_KILL\_CURSORS消息用于关闭数据库中的活动光标。这是确保在查询结束时回收数据库资源所必需的。OP\_KILL\_CURSORS消息的格式是：
 
-```c
+```
 struct {
     MsgHeader header;            // standard message header
     int32     ZERO;              // 0 - reserved for future use
@@ -247,26 +235,26 @@ struct {
 }
 ```
 
-| Field | Description |
+| 字段 | 描述 |
 | :--- | :--- |
-| `header` | Message header, as described in[Standard Message Header](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header). |
-| `ZERO` | Integer value of 0. Reserved for future use. |
-| `numberOfCursorIDs` | The number of cursor IDs that are in the message. |
-| `cursorIDs` | “Array” of cursor IDs to be closed. If there are more than one, they are written to the socket in sequence, one after another. |
+| `header` | 消息头，如[标准消息头中所述](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header)。 |
+| `ZERO` | 整数值为0.保留以备将来使用。 |
+| `numberOfCursorIDs` | 消息中的光标ID的数量。 |
+| `cursorIDs` | 游标ID的“数组”被关闭。如果有多个，它们会依次写入到插槽中。 |
 
-If a cursor is read until exhausted \(read until[OP\_QUERY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-query)or[OP\_GET\_MORE](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-get-more)returns zero for the cursor id\), there is no need to kill the cursor.
+如果游标被读取直到耗尽（读取直到[OP\_QUERY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-query)或[OP\_GET\_MORE](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-get-more)为游标ID返回0），则不需要[终止](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-get-more)游标。
 
 ### OP\_COMMAND
 
-WARNING
+警告
 
-`OP_COMMAND`is cluster internal and should not be implemented by clients or drivers.
+`OP_COMMAND`是集群内部的，不应该由客户端或驱动程序来实现。
 
-The`OP_COMMAND`format and protocol is not stable and may change between releases without maintaining backwards compatibility.
+的`OP_COMMAND`格式和协议是不稳定的，而不保持向后兼容版本之间可能会改变。
 
-`OP_COMMAND`is a wire protocol message used internally for intra-cluster database command requests issued by one MongoDB server to another. The receiving database sends back an[OP\_COMMANDREPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-commandreply)as a response to a`OP_COMMAND`.
+`OP_COMMAND`是一个有线协议消息，用于在一个MongoDB服务器向另一个MongoDB服务器发出的集群内数据库命令请求。接收数据库发回一个[OP\_COMMANDREPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-commandreply)作为对一个响应`OP_COMMAND`。
 
-```c
+```
 struct {
    MsgHeader header;     // standard message header
    cstring database;     // the name of the database to run the command on
@@ -277,22 +265,22 @@ struct {
 }
 ```
 
-| Field | Description |
+| 字段 | 描述 |
 | :--- | :--- |
-| `header` | Standard message header, as described in[Standard Message Header](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header). |
-| `database` | The name of the database to run the command on. |
-| `commandName` | The name of the command. See[Database Commands](https://docs.mongodb.com/manual/reference/command/#database-commands)for a list of database commands. |
-| `metadata` | Available for the system to attach any metadata to internal commands that is not part of the command parameters proper, as supplied by the client driver |
-| `commandArgs` | A BSON document containing the command arguments.See the documentation for the specified`commandName`for information its arguments |
-| `inputDocs` | Zero or more documents acting as input to the command. Useful for commands that can require a large amount of data sent from the client, such as a batch insert. |
+| `header` | 标准消息头，如在[标准消息头](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header)。 |
+| `database` | 要运行该命令的数据库的名称。 |
+| `commandName` | 命令的名称。有关[数据库命令](https://docs.mongodb.com/manual/reference/command/#database-commands)的列表，请参阅数据库命令。 |
+| `metadata` | 可用于系统将任何元数据附加到不属于命令参数本身的内部命令（由客户端驱动程序提供） |
+| `commandArgs` | 包含命令参数的BSON文档。有关`commandName`其参数的信息，请参阅文档 |
+| `inputDocs` | 作为输入到命令的零个或多个文档。用于需要从客户端发送大量数据的命令，例如批量插入。 |
 
-## Database Response Messages
+## 数据库的响应消息
 
 ### OP\_REPLY
 
-The`OP_REPLY`message is sent by the database in response to an[OP\_QUERY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-query)or[OP\_GET\_MORE](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-get-more)message. The format of an OP\_REPLY message is:
+该`OP_REPLY`消息由数据库发送，以响应[OP\_QUERY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-query)或[OP\_GET\_MORE](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-get-more)消息。OP\_REPLY消息的格式是：
 
-```c
+```
 struct {
     MsgHeader header;         // standard message header
     int32     responseFlags;  // bit vector - see details below
@@ -303,28 +291,28 @@ struct {
 }
 ```
 
-| Field | Description |
+| 字段 | 描述 |
 | :--- | :--- |
-| `header` | Message header, as described in[Standard Message Header](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header). |
-| `responseFlags` | Bit vector to specify flags. The bit values correspond to the following:`0`corresponds to CursorNotFound. Is set when`getMore`is called but the cursor id is not valid at the server. Returned with zero results.`1`corresponds to QueryFailure. Is set when query failed. Results consist of one document containing an “$err” field describing the failure.`2`corresponds to ShardConfigStale. Drivers should ignore this. Only[`mongos`](https://docs.mongodb.com/manual/reference/program/mongos/#bin.mongos)will ever see this set, in which case, it needs to update config from the server.`3`corresponds to AwaitCapable. Is set when the server supports the AwaitData Query option. If it doesn’t, a client should sleep a little between getMore’s of a Tailable cursor. Mongod version 1.6 supports AwaitData and thus always sets AwaitCapable.`4`-`31`are reserved. Ignore. |
-| `cursorID` | The`cursorID`that this OP\_REPLY is a part of. In the event that the result set of the query fits into one OP\_REPLY message,`cursorID`will be 0. This`cursorID`must be used in any[OP\_GET\_MORE](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-get-more)messages used to get more data, and also must be closed by the client when no longer needed via a[OP\_KILL\_CURSORS](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-kill-cursors)message. |
-| `startingFrom` | Starting position in the cursor. |
-| `numberReturned` | Number of documents in the reply. |
-| `documents` | Returned documents. |
+| `header` | 消息头，如[标准消息头中所述](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header)。 |
+| `responseFlags` | 位矢量指定标志。位值对应于以下内容：`0`对应于CursorNotFound。在`getMore`被调用时被设置，但是在服务器上的光标ID是无效的。返回零结果。`1`对应于QueryFailure。查询失败时设置。结果由一个包含描述失败的“$ err”字段的文档组成。`2`对应于ShardConfigStale。司机应该忽略这一点。只会[`mongos`](https://docs.mongodb.com/manual/reference/program/mongos/#bin.mongos)看到这个集合，在这种情况下，它需要从服务器更新配置。`3`对应于AwaitCapable。当服务器支持“等待数据查询”选项时设置。如果没有，客户端应该在Tailble游标的getMore之间稍微睡一会儿。Mongod版本1.6支持AwaitData，因此总是设置AwaitCapable。`4`-`31`保留。忽视。 |
+| `cursorID` | 这`cursorID`是OP\_REPLY的一部分。如果查询的结果集适合一个OP\_REPLY消息，`cursorID`则该值为0.这`cursorID`必须在用于获取更多数据的任何[OP\_GET\_MORE](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-get-more)消息中使用，并且在不再需要时通过[OP\_KILL\_CURSORS](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-kill-cursors)消息必须关闭。 |
+| `startingFrom` | 在光标的起始位置。 |
+| `numberReturned` | 答复中的文件数量。 |
+| `documents` | 退回文件。 |
 
 ### OP\_COMMANDREPLY
 
-WARNING
+警告
 
-`OP_COMMANDREPLY`is cluster internal and should not be implemented by clients or drivers.
+`OP_COMMANDREPLY`是集群内部的，不应该由客户端或驱动程序来实现。
 
-The`OP_COMMANDREPLY`format and protocol is not stable and may change between releases without maintaining backwards compatibility.
+的`OP_COMMANDREPLY`格式和协议是不稳定的，而不保持向后兼容版本之间可能会改变。
 
-The`OP_COMMANDREPLY`is a wire protocol message used internally for replying to intra-cluster[OP\_COMMAND](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-command)requests issued by one MongoDB server to another.
+这`OP_COMMANDREPLY`是一个有线协议消息，用于在内部响应由一个MongoDB服务器向另一个服务器发出的集群内[OP\_COMMAND](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-command)请求。
 
-The format of an`OP_COMMANDREPLY`is:
+格式`OP_COMMANDREPLY`是：
 
-```c
+```
 struct {
    MsgHeader header;       // A standard wire protocol header
    document metadata;      // A BSON document containing any required metadata
@@ -333,12 +321,12 @@ struct {
 }
 ```
 
-| Field | Description |
+| 字段 | 描述 |
 | :--- | :--- |
-| `header` | Standard message header, as described in[Standard Message Header](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header). |
-| `metadata` | Available for the system to attach any metadata to internal commands that is not part of the command parameters proper, as supplied by the client driver. |
-| `commandReply` | A BSON document containing the command reply. |
-| `outputDocs` | Useful for commands that can return a large amount of data, such as find or aggregate.This field is not currently in use. |
+| `header` | 标准消息头，如在[标准消息头]·(https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header)。 |
+| `metadata` | 可用于系统将任何元数据附加到不属于命令参数本身的内部命令（由客户端驱动程序提供）。 |
+| `commandReply` | 包含命令回复的BSON文档。 |
+| `outputDocs` | 用于可以返回大量数据的命令，如查找或聚合。这个字段目前没有被使用。 |
 
 
 
