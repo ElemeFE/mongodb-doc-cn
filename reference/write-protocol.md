@@ -17,11 +17,10 @@ MongoDB 通信协议是简单的基于套接字的请求响应风格的协议。
 
 ### 端口
 
-[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)和[`mongos`](https://docs.mongodb.com/manual/reference/program/mongos/#bin.mongos)进程默认端口号为 27017，此外端口是可以配置修改的。
+[`mongod`](https://docs.mongodb.com/manual/reference/program/mongod/#bin.mongod)和[`mongos`](https://docs.mongodb.com/manual/reference/program/mongos/#bin.mongos)进程默认端口号为 27017，此外端口是可以配置修改的。
 
 ### 字节序
 
-All data in the MongoDB wire protocol is little-endian.
 MongoDB 通信协议的数据采用小端[`字节序`](https://zh.wikipedia.org/wiki/%E5%AD%97%E8%8A%82%E5%BA%8F#.E5.B0.8F.E7.AB.AF.E5.BA.8F)。
 
 ## 报文类型格式
@@ -30,14 +29,14 @@ MongoDB 通信协议的数据采用小端[`字节序`](https://zh.wikipedia.org/
 
 注解
 
-* 本文使用 C 语言风格的结构体来描述报文格式。
+* 本文使用 C 语言风格的结构体来描述报文格式。
 * 文档中使用的类型如 \(
   `cstring`
   ,
   `int32`
   , 等.\) 对应于[BSON 类型说明](http://bsonspec.org/#/specification)中的数据类型格式
   .
-* 文档中使用星号表示法来表示重复，例如 int64* 表示一个或多个 int64 类型（具体可见[BSON 类型说明](http://bsonspec.org/#/specification)）可以被一个接一个的往套接字中写入。
+* 文档中使用星号表示法来表示重复，例如 int64* 表示一个或多个 int64 类型（具体可见[BSON 类型说明](http://bsonspec.org/#/specification)）可以被一个接一个的往套接字中写入。
 * 本文将标准头部命名为 `MsgHeader`。整型常量使用大写字母表示 (例如，`ZERO` 表示整型值 0)。
 
 ## 标准报文头
@@ -58,33 +57,33 @@ struct MsgHeader {
 | :--- | :--- |
 | `messageLength` | 报文总长度，使用 4 个字节表示。 |
 | `requestID` | 由客户端或服务器生成的报文唯一标识。 例如客户端请求 \([OP\_QUERY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-query) 和 [OP\_GET\_MORE](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-get-more)\), 将返回 [OP\_REPLY](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-reply) 报文给 `responseTo` 字段表示的请求. 客户端可以使用 `requestID` 和 `responseTo` 字段关联查询响应到原始请求上。 |
-| `responseTo` | 服务端响应使用此字段关联到 `requestID` 对应的查询请求上。|
+| `responseTo` | 服务端响应使用此字段关联到 `requestID` 对应的查询请求上。|
 | `opCode` | 报文类型，详情见 [请求操作码](#请求操作码)。 |
 
 ### 请求操作码
 
 注释
 
-自 MongoDB 2.6 和[`maxWireVersion`](https://docs.mongodb.com/manual/reference/command/isMaster/#isMaster.maxWireVersion) `3`, MongoDB 驱动使用[数据库命令](https://docs.mongodb.com/manual/reference/command/#collection-commands)[`insert`](https://docs.mongodb.com/manual/reference/command/insert/#dbcmd.insert),[`update`](https://docs.mongodb.com/manual/reference/command/update/#dbcmd.update), 和[`delete`](https://docs.mongodb.com/manual/reference/command/delete/#dbcmd.delete)方式代替 `OP_INSERT`,`OP_UPDATE`, 和`OP_DELETE`操作码方式。许多驱动仍然在使用操作码方式。
+自 MongoDB 2.6 和[`maxWireVersion`](https://docs.mongodb.com/manual/reference/command/isMaster/#isMaster.maxWireVersion) `3`, MongoDB 驱动使用[数据库命令](https://docs.mongodb.com/manual/reference/command/#collection-commands)[`insert`](https://docs.mongodb.com/manual/reference/command/insert/#dbcmd.insert),[`update`](https://docs.mongodb.com/manual/reference/command/update/#dbcmd.update), 和[`delete`](https://docs.mongodb.com/manual/reference/command/delete/#dbcmd.delete)方式代替 `OP_INSERT`,`OP_UPDATE`, 和`OP_DELETE`操作码方式。许多驱动仍然在使用操作码方式。
 
 重点
 
 `OP_COMMAND` 和 `OP_COMMANDREPLY` 是集群内部操作命令，不需要实现。
 
-`OP_COMMAND` 和 `OP_COMMANDREPLY` 操作协议格式是非固定的，不支持向后兼容。
+`OP_COMMAND` 和 `OP_COMMANDREPLY` 操作协议格式是非固定的，不支持向后兼容。
 
 协议支持的 `操作码 (Opcode)` 如下:
 
-| 操作码 (Opcode) 名 | 值 | 注解 |
+| 操作码 (Opcode) 名 | 值 | 注解 |
 | :--- | :--- | :--- |
 | `OP_REPLY` | 1 | 客户端请求回复。此操作 `responseTo` 会被设置为对应的 `requestID` 值。 |
 | `OP_UPDATE` | 2001 | 更新文档。 |
-| `OP_INSERT` | 2002 | 插入新文档。 |
+| `OP_INSERT` | 2002 | 插入新文档。 |
 | `RESERVED` | 2003 | 保留操作，以前用于 OP\_GET\_BY\_OID。 |
 | `OP_QUERY` | 2004 | 集合查询操作。 |
 | `OP_GET_MORE` | 2005 | OP_QUERY 后获取更多信息的后续操作。 详情见游标 (cursor)。 |
 | `OP_DELETE` | 2006 | 删除文档。 |
-| `OP_KILL_CURSORS` | 2007 | 用于通知数据库客户端游标已经操作完成，需销毁。 |
+| `OP_KILL_CURSORS` | 2007 | 用于通知数据库客户端游标已经操作完成，需销毁。 |
 | `OP_COMMAND` | 2010 | 集群内部请求命令操作。 |
 | `OP_COMMANDREPLY` | 2011 | 集群内部请求命令 `OP_COMMAND` 的响应。 |
 
@@ -102,12 +101,12 @@ OP\_UPDATE消息用于更新集合中的文档。OP\_UPDATE消息的格式如下
 
 ```
 struct OP_UPDATE {
-    MsgHeader header;             // standard message header
-    int32     ZERO;               // 0 - reserved for future use
+    MsgHeader header;             // 标准报文头
+    int32     ZERO;               // 0 - 保留给以后使用
     cstring   fullCollectionName; // "dbname.collectionname"
-    int32     flags;              // bit vector. see below
-    document  selector;           // the query to select the document
-    document  update;             // specification of the update to perform
+    int32     flags;              // 矢量位，见下表
+    document  selector;           // 文档查询条件
+    document  update;             // 指定要执行的更新
 }
 ```
 
@@ -128,10 +127,10 @@ OP\_INSERT消息用于将一个或多个文档插入到集合中。OP\_INSERT消
 
 ```
 struct {
-    MsgHeader header;             // standard message header
-    int32     flags;              // bit vector - see below
+    MsgHeader header;             // 标准的报文头
+    int32     flags;              // 位向量 - 见下面
     cstring   fullCollectionName; // "dbname.collectionname"
-    document* documents;          // one or more documents to insert into the collection
+    document* documents;          // 一个或多个要插入集合的文档
 }
 ```
 
@@ -150,15 +149,14 @@ OP\_QUERY消息用于在数据库中查询集合中的文档。OP\_QUERY消息�
 
 ```
 struct OP_QUERY {
-    MsgHeader header;                 // standard message header
-    int32     flags;                  // bit vector of query options.  See below for details.
+    MsgHeader header;                 // 标准的报文头
+    int32     flags;                  // 查询选项的位向量。详情请参阅下文。
     cstring   fullCollectionName ;    // "dbname.collectionname"
-    int32     numberToSkip;           // number of documents to skip
-    int32     numberToReturn;         // number of documents to return
-                                      //  in the first OP_REPLY batch
-    document  query;                  // query object.  See below for details.
-  [ document  returnFieldsSelector; ] // Optional. Selector indicating the fields
-                                      //  to return.  See below for details.
+    int32     numberToSkip;           // 要跳过的文件数
+    int32     numberToReturn;         // 表示第一个 OP_REPLY 响应中的文档返回数，
+
+    document  query;                  // 查询条件，见下表
+  [ document  returnFieldsSelector; ] // 用于限制返回文档的字段，见下表
 }
 ```
 
@@ -180,11 +178,11 @@ OP\_GET\_MORE消息用于在数据库中查询集合中的文档。OP\_GET\_MORE
 
 ```
 struct {
-    MsgHeader header;             // standard message header
-    int32     ZERO;               // 0 - reserved for future use
+    MsgHeader header;             // 标准报文头
+    int32     ZERO;               // 0 - 保留给以后使用
     cstring   fullCollectionName; // "dbname.collectionname"
-    int32     numberToReturn;     // number of documents to return
-    int64     cursorID;           // cursorID from the OP_REPLY
+    int32     numberToReturn;     // 返回的文档数量
+    int64     cursorID;           // cursorID 会在 OP_REPLY 中设置
 }
 ```
 
@@ -204,11 +202,11 @@ OP\_DELETE消息用于从集合中删除一个或多个文档。OP\_DELETE消息
 
 ```
 struct {
-    MsgHeader header;             // standard message header
-    int32     ZERO;               // 0 - reserved for future use
+    MsgHeader header;             // 标准报文头
+    int32     ZERO;               // 0 - 保留给以后使用
     cstring   fullCollectionName; // "dbname.collectionname"
-    int32     flags;              // bit vector - see below for details.
-    document  selector;           // query object.  See below for details.
+    int32     flags;              // 矢量位，见下表
+    document  selector;           // 查询过滤条件，见下表
 }
 ```
 
@@ -228,10 +226,10 @@ OP\_KILL\_CURSORS消息用于关闭数据库中的活动光标。这是确保在
 
 ```
 struct {
-    MsgHeader header;            // standard message header
-    int32     ZERO;              // 0 - reserved for future use
-    int32     numberOfCursorIDs; // number of cursorIDs in message
-    int64*    cursorIDs;         // sequence of cursorIDs to close
+    MsgHeader header;            // 标准报文头部
+    int32     ZERO;              // 0 - 保留以后使用
+    int32     numberOfCursorIDs; // CursorID 数量
+    int64*    cursorIDs;         // 需要关闭的游标
 }
 ```
 
@@ -256,12 +254,12 @@ struct {
 
 ```
 struct {
-   MsgHeader header;     // standard message header
-   cstring database;     // the name of the database to run the command on
-   cstring commandName;  // the name of the command
-   document metadata;    // a BSON document containing any metadata
-   document commandArgs; // a BSON document containing the command arguments
-   inputDocs;            // a set of zero or more documents
+   MsgHeader header;     // 标准报文头部
+   cstring database;     // 要运行该命令的数据库的名称
+   cstring commandName;  // 命令名称
+   document metadata;    // 命令描述信息
+   document commandArgs; // 命令参数
+   inputDocs;            // 用于输入到命令的零个或多个文档
 }
 ```
 
@@ -274,7 +272,7 @@ struct {
 | `commandArgs` | 包含命令参数的BSON文档。有关`commandName`其参数的信息，请参阅文档 |
 | `inputDocs` | 作为输入到命令的零个或多个文档。用于需要从客户端发送大量数据的命令，例如批量插入。 |
 
-## 数据库的响应消息
+## 数据库响应报文
 
 ### OP\_REPLY
 
@@ -282,12 +280,12 @@ struct {
 
 ```
 struct {
-    MsgHeader header;         // standard message header
-    int32     responseFlags;  // bit vector - see details below
-    int64     cursorID;       // cursor id if client needs to do get more's
-    int32     startingFrom;   // where in the cursor this reply is starting
-    int32     numberReturned; // number of documents in the reply
-    document* documents;      // documents
+    MsgHeader header;         // 标准报文头
+    int32     responseFlags;  // 适量位，见下表
+    int64     cursorID;       // 游标 id，在 OP\_GET\_MORE 时会被用到
+    int32     startingFrom;   // 光标起始位置
+    int32     numberReturned; // 响应中的文档数量
+    document* documents;      // 响应文档
 }
 ```
 
@@ -296,9 +294,9 @@ struct {
 | `header` | 消息头，如[标准消息头中所述](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wp-message-header)。 |
 | `responseFlags` | 位矢量指定标志。位值对应于以下内容：`0`对应于CursorNotFound。在`getMore`被调用时被设置，但是在服务器上的光标ID是无效的。返回零结果。`1`对应于QueryFailure。查询失败时设置。结果由一个包含描述失败的“$ err”字段的文档组成。`2`对应于ShardConfigStale。司机应该忽略这一点。只会[`mongos`](https://docs.mongodb.com/manual/reference/program/mongos/#bin.mongos)看到这个集合，在这种情况下，它需要从服务器更新配置。`3`对应于AwaitCapable。当服务器支持“等待数据查询”选项时设置。如果没有，客户端应该在Tailble游标的getMore之间稍微睡一会儿。Mongod版本1.6支持AwaitData，因此总是设置AwaitCapable。`4`-`31`保留。忽视。 |
 | `cursorID` | 这`cursorID`是OP\_REPLY的一部分。如果查询的结果集适合一个OP\_REPLY消息，`cursorID`则该值为0.这`cursorID`必须在用于获取更多数据的任何[OP\_GET\_MORE](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-get-more)消息中使用，并且在不再需要时通过[OP\_KILL\_CURSORS](https://docs.mongodb.com/manual/reference/mongodb-wire-protocol/#wire-op-kill-cursors)消息必须关闭。 |
-| `startingFrom` | 在光标的起始位置。 |
-| `numberReturned` | 答复中的文件数量。 |
-| `documents` | 退回文件。 |
+| `startingFrom` | 光标起始位置。 |
+| `numberReturned` | 响应中的文档数量。 |
+| `documents` | 响应文档 |
 
 ### OP\_COMMANDREPLY
 
@@ -314,10 +312,10 @@ struct {
 
 ```
 struct {
-   MsgHeader header;       // A standard wire protocol header
-   document metadata;      // A BSON document containing any required metadata
-   document commandReply;  // A BSON document containing the command reply
-   document outputDocs;    // A variable number of BSON documents
+   MsgHeader header;       // 标准报文头
+   document metadata;      // 一个 BSON 格式的命令描述信息
+   document commandReply;  // 一个 BSON 格式的命令响应
+   document outputDocs;    // 返回内容文档
 }
 ```
 
