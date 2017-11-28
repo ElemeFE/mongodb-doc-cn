@@ -64,11 +64,11 @@ Some documents created by internal MongoDB processes may have duplicate fields, 
 
 ### 字段值限制
 
-For[indexed collections](https://docs.mongodb.com/manual/indexes/), the values for the indexed fields have a[`MaximumIndexKeyLength`](https://docs.mongodb.com/manual/reference/limits/#Index-Key-Limit)limit. See[`MaximumIndexKeyLength`](https://docs.mongodb.com/manual/reference/limits/#Index-Key-Limit)for details.
+对于[有索引的集合](https://docs.mongodb.com/manual/indexes/), 其索引字段有一个 [最大索引 key 长度 (`MaximumIndexKeyLength`)](https://docs.mongodb.com/manual/reference/limits/#Index-Key-Limit) 限制. 详细参见 [`MaximumIndexKeyLength`](https://docs.mongodb.com/manual/reference/limits/#Index-Key-Limit).
 
 ## 点符号
 
-MongoDB uses the_点符号_to access the elements of an array and to access the fields of an embedded document.
+MongoDB 使用 _._ 来访问数组中的元素以及内嵌文档中的字段.
 
 ### 数组
 
@@ -133,11 +133,9 @@ For examples querying embedded documents, see:
 
 ## 文档限制
 
-Documents have the following attributes:
-
 ### 文档大小限制
 
-The maximum BSON document size is 16 megabytes.
+BSON 文档的最大 size 为 16 MB.
 
 The maximum document size helps ensure that a single document cannot use excessive amount of RAM or, during transmission, excessive amount of bandwidth. To store documents larger than the maximum size, MongoDB provides the GridFS API. See[`mongofiles`](https://docs.mongodb.com/manual/reference/program/mongofiles/#bin.mongofiles)and the documentation for your[driver](https://docs.mongodb.com/manual/applications/drivers/)for more information about GridFS.
 
