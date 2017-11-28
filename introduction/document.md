@@ -99,8 +99,7 @@ MongoDB 使用 _._ 来访问数组中的元素以及内嵌文档中的字段.
 
 * [`$`](https://docs.mongodb.com/manual/reference/operator/update/positional/#up._S_) positional operator for update operations,
 * [`$`](https://docs.mongodb.com/manual/reference/operator/projection/positional/#proj._S_) projection operator when array index position is unknown
-* [Query an Array](https://docs.mongodb.com/manual/tutorial/query-arrays/#read-operations-arrays)
-  for 点符号 examples with arrays.
+* [Query an Array](https://docs.mongodb.com/manual/tutorial/query-arrays/#read-operations-arrays) for 点符号 examples with arrays.
 
 ### 内嵌文档
 
@@ -148,11 +147,11 @@ Changed in version 2.6:Starting in version 2.6, MongoDB actively attempts to pre
 
 ### `_id` 字段
 
-In MongoDB, each document stored in a collection requires a unique[\_id](https://docs.mongodb.com/manual/reference/glossary/#term-id)field that acts as a[primary key](https://docs.mongodb.com/manual/reference/glossary/#term-primary-key). If an inserted document omits the`_id`field, the MongoDB driver automatically generates an[ObjectId](https://docs.mongodb.com/manual/reference/bson-types/#objectid)for the`_id`field.
+在 MongoDB 中, 存在集合中的每个文档都需要一个唯一的 [\_id](https://docs.mongodb.com/manual/reference/glossary/#term-id) 字段来作为 [主键](https://docs.mongodb.com/manual/reference/glossary/#term-primary-key). 如果一个插入的文档省略了 `_id` 字段, 那么 MongoDB 驱动会自动生成一个 [ObjectId](https://docs.mongodb.com/manual/reference/bson-types/#objectid) 来作为 `_id`.
 
-This also applies to documents inserted through update operations with[upsert: true](https://docs.mongodb.com/manual/reference/method/db.collection.update/#upsert-parameter).
+这也适用于通过 [upsert: true](https://docs.mongodb.com/manual/reference/method/db.collection.update/#upsert-parameter) 方式插入的文档.
 
-The`_id`field has the following behavior and constraints:
+`_id` 字段有一下的表现和约束:
 
 * By default, MongoDB creates a unique index on the`_id`field during the creation of a collection.
 
@@ -160,22 +159,22 @@ The`_id`field has the following behavior and constraints:
 
 * The`_id`field may contain values of any[BSON data type](https://docs.mongodb.com/manual/reference/bson-types/), other than an array.
 
->  WARNING
+>  警告
 >
 >  To ensure functioning replication, do not store values that are of the BSON regular expression type in the`_id`field.
 >
 
-The following are common options for storing values for`_id`:
+一下是 `_id` 的常见情况:
 
-* Use an[ObjectId](https://docs.mongodb.com/manual/reference/bson-types/#objectid).
+* 使用 [ObjectId](https://docs.mongodb.com/manual/reference/bson-types/#objectid).
 
 * Use a natural unique identifier, if available. This saves space and avoids an additional index.
 
-* Generate an auto-incrementing number.
+* 生成一个自增长的数字. (译注：类似 mysql 的 auto increase)
 
-* Generate a UUID in your application code. For a more efficient storage of the UUID values in the collection and in the`_id`index, store the UUID as a value of the BSON`BinData`type.
+* 在你的应用中生成一个 UUID. For a more efficient storage of the UUID values in the collection and in the`_id`index, store the UUID as a value of the BSON `BinData` type.
 
-  Index keys that are of the`BinData`type are more efficiently stored in the index if:
+  Index keys that are of the`BinData` type are more efficiently stored in the index if:
 
   * the binary subtype value is in the range of 0-7 or 128-135, and
   * the length of the byte array is: 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24, or 32.
