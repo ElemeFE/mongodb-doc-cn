@@ -26,7 +26,7 @@ MongoDB 文档由 字段-值 成对组成，结构如下:
 }
 ```
 
-字段的值可以是任意的 BSON[数据类型](https://docs.mongodb.com/manual/reference/bson-types/), 包括其他的文档, 数组, 或者含文档的数组. 例如, 以下文档包含的不同类型的值:
+字段的值可以是任意的 BSON [数据类型](https://docs.mongodb.com/manual/reference/bson-types/), 包括其他的文档, 数组, 或者含文档的数组. 例如, 以下文档包含的不同类型的值:
 
 ```js
 var  mydoc  =  { 
@@ -53,10 +53,10 @@ var  mydoc  =  {
 
 [文档](https://docs.mongodb.com/manual/core/document/#) 对字段名称有以下一些限制:
 
-* The field name `_id` is reserved for use as a primary key; its value must be unique in the collection, is immutable, and may be of any type other than an array.
-* The 字段名称 **cannot** start with the dollar sign \(`$`\) character.
-* The 字段名称 **cannot** contain the dot \(`.`\) character.
-* The 字段名称 **cannot** contain the `null` character.
+* 字段 `_id` 保留用于主键的; 该字段必须在集合中唯一, 不可改变, 并且可以是数组外的任意类型.
+* 字段名称**不能**以 \(`$`\) 符号开头.
+* 字段名称**不能**包含 \(`.`\) 字符.
+* 字段名称**不能**包含 `null` 字符.
 
 BSON documents may have more than one field with the same name. Most[MongoDB interfaces](https://docs.mongodb.com/manual/applications/drivers/), however, represent MongoDB with a structure \(e.g. a hash table\) that does not support duplicate 字段名称. If you need to manipulate documents that have more than one field with the same name, see the[driver documentation](https://docs.mongodb.com/manual/applications/drivers/)for your driver.
 
@@ -72,13 +72,13 @@ MongoDB 使用 _._ 来访问数组中的元素以及内嵌文档中的字段.
 
 ### 数组
 
-To specify or access an element of an array by the zero-based index position, concatenate the array name with the dot \(`.`\) and zero-based index position, and enclose in quotes:
+要通过基于零的数组位置来指定或访问数组的元素，请使用数组名与 \(`.`\) 和从零开始的数组位置，并用中括号括起来：
 
 ```
 " < array > . < index > "
 ```
 
-For example, given the following field in a document:
+例如, 给定如下文档的字段:
 
 ```
 {
@@ -88,14 +88,14 @@ For example, given the following field in a document:
 }
 ```
 
-To specify the third element in the`contribs`array, use the 点符号`"contribs.2"`.
+要指定数组 `contribs` 中的第三个元素, 可以使用 `"contribs.2"`.
 
-For examples querying arrays, see:
+关于查询数组的, 参见:
 
 * [Query an Array](https://docs.mongodb.com/manual/tutorial/query-arrays/)
 * [Query an Array of Embedded Documents](https://docs.mongodb.com/manual/tutorial/query-array-of-documents/)
 
-SEE ALSO
+也参见
 
 * [`$`](https://docs.mongodb.com/manual/reference/operator/update/positional/#up._S_) positional operator for update operations,
 * [`$`](https://docs.mongodb.com/manual/reference/operator/projection/positional/#proj._S_) projection operator when array index position is unknown
@@ -104,13 +104,13 @@ SEE ALSO
 
 ### 内嵌文档
 
-To specify or access a field of an embedded document with 点符号, concatenate the embedded document name with the dot \(`.`\) and the field name, and enclose in quotes:
+要指定或访问内嵌文档的字段，请将内嵌文档名称与 \(`.`\) 和字段名称连接起来，并用中括号括起来：
 
 ```
 " < embedded document > . < field > "
 ```
 
-For example, given the following field in a document:
+例如, 给定如下文档中的字段:
 
 ```
 {
@@ -121,10 +121,10 @@ For example, given the following field in a document:
 }
 ```
 
-* To specify the field named `last` in the `name` field, use the 点符号 `"name.last"`.
-* To specify the `number` in the `phone` document in the `contact` field, use the 点符号 `"contact.phone.number"`.
+* 要指定 `name` 字段中的 `last` 字段, 可以使用 `"name.last"`.
+* 要指定 `contact` 下 `phone` 中的 `number` 字段, 可以使用 `"contact.phone.number"`.
 
-For examples querying embedded documents, see:
+关于查询内嵌文档, 参见:
 
 * [Query on Embedded/Nested Documents](https://docs.mongodb.com/manual/tutorial/query-embedded-documents/)
 * [Query an Array of Embedded Documents](https://docs.mongodb.com/manual/tutorial/query-array-of-documents/)
