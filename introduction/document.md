@@ -97,10 +97,8 @@ For examples querying arrays, see:
 
 SEE ALSO
 
-* [`$`](https://docs.mongodb.com/manual/reference/operator/update/positional/#up._S_)
-  positional operator for update operations,
-* [`$`](https://docs.mongodb.com/manual/reference/operator/projection/positional/#proj._S_)
-  projection operator when array index position is unknown
+* [`$`](https://docs.mongodb.com/manual/reference/operator/update/positional/#up._S_) positional operator for update operations,
+* [`$`](https://docs.mongodb.com/manual/reference/operator/projection/positional/#proj._S_) projection operator when array index position is unknown
 * [Query an Array](https://docs.mongodb.com/manual/tutorial/query-arrays/#read-operations-arrays)
   for 点符号 examples with arrays.
 
