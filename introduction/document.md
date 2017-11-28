@@ -2,11 +2,11 @@
 
 本页索引
 
-* [文档结构](https://docs.mongodb.com/manual/core/document/#document-structure)
-* [点符号](https://docs.mongodb.com/manual/core/document/#dot-notation)
-* [文档限制](https://docs.mongodb.com/manual/core/document/#document-limitations)
-* [文档结构的其他用途](https://docs.mongodb.com/manual/core/document/#other-uses-of-the-document-structure)
-* [其他资源](https://docs.mongodb.com/manual/core/document/#additional-resources)
+* [文档结构](#文档结构)
+* [点符号](#点符号)
+* [文档限制](#文档限制)
+* [文档结构的其他用途](#文档结构的其他用途)
+* [其他资源](#其他资源)
 
 MongoDB 将数据记录存储为 BSON 文档. BSON 是一个 [JSON 的二进制形式](https://docs.mongodb.com/manual/reference/glossary/#term-json) 文档, 虽然它比起 JSON 包含更多的数据类型. 关于 BSON 的规范, 参见 [bsonspec.org](http://bsonspec.org/). 也可以查看本手册的 [BSON 类型](https://docs.mongodb.com/manual/reference/bson-types/).
 
@@ -51,7 +51,7 @@ var  mydoc  =  {
 
 字段名称是 string 类型.
 
-[文档](https://docs.mongodb.com/manual/core/document/#) 对字段名称有以下一些限制:
+[文档](#) 对字段名称有以下一些限制:
 
 * 字段 `_id` 保留用于主键的; 该字段必须在集合中唯一, 不可改变, 并且可以是数组外的任意类型.
 * 字段名称**不能**以 \(`$`\) 符号开头.
@@ -188,7 +188,7 @@ The following are common options for storing values for`_id`:
 
 ## 文档结构的其他用途
 
-除了定义数据记录之外, MongoDB 还可以使用文档结构来做一些, 包括但不限于: [文档查询过滤](https://docs.mongodb.com/manual/core/document/#document-query-filter),[文档指定更新](https://docs.mongodb.com/manual/core/document/#document-update-specification), 以及[文档索引规范](https://docs.mongodb.com/manual/core/document/#document-index-specification)
+除了定义数据记录之外, MongoDB 还可以使用文档结构来做一些, 包括但不限于: [文档查询过滤](#document-query-filter),[文档指定更新](#document-update-specification), 以及[文档索引规范](#document-index-specification)
 
 ### 文档查询过滤
 
