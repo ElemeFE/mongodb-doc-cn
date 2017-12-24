@@ -2,19 +2,19 @@
 
 On this page
 
-* [Collation Document](https://docs.mongodb.com/manual/reference/collation/#collation-document)
-* [Operations that Support Collation](https://docs.mongodb.com/manual/reference/collation/#operations-that-support-collation)
-* [Behavior](https://docs.mongodb.com/manual/reference/collation/#behavior)
+* [文档结构](#文档结构)
+* [支持核对的操作](#支持核对的操作)
+* [表现](#表现)
 
-New in version 3.4.
+3.4 版本中的新功能.
 
-Collation allows users to specify language-specific rules for string comparison, such as rules for lettercase and accent marks.
+核对 (Collation) 允许用户来指定一个特定语言规则的字符串比较, 比如小写字母和口音标记的规则。
 
-You can specify collation for a collection or a view, an index, or specific operations that support collation.
+你可以为集合、视图或者索引指定核对，也可以给特定的支持核对操作的方法来指定核对。
 
-## Collation Document
+## 文档结构
 
-A collation document has the following fields:
+一个核对的文档结构有以下一些字段:
 
 ```
 {
@@ -29,9 +29,9 @@ A collation document has the following fields:
 }
 ```
 
-When specifying collation, the`locale`field is mandatory; all other collation fields are optional. For descriptions of the fields, see[Collation Document](https://docs.mongodb.com/manual/reference/collation/#collation-document-fields).
+当指定了核对, `locale` 字段就是强制要带上的; 所有其他的字段都是可选的。关于这些字段的描述，参见 [Collation Document](#collation-document-fields)。
 
-Default collation parameter values vary depending on which locale you specify. For a complete list of default collation parameters and the locales they are associated with, see[Collation Default Parameters](https://docs.mongodb.com/manual/reference/collation-locales-defaults/#collation-default-params).
+默认的核对规则参数根据你指定的 `locale` 字段而不同。关于完整的默认核对参数列表以及它们相关的 `locale`，参见 [Collation Default Parameters](https://docs.mongodb.com/manual/reference/collation-locales-defaults/#collation-default-params).
 
 | Field | Type | Description |
 | :--- | :--- | :--- |
@@ -45,7 +45,7 @@ Default collation parameter values vary depending on which locale you specify. F
 | `backwards` | boolean | Optional. Flag that determines whether strings with diacritics sort from back of the string, such as with some French dictionary ordering.If`true`, compare from back to front.If`false`, compare from front to back.The default value is`false`. |
 | `normalization` | boolean | Optional. Flag that determines whether to check if text require normalization and to perform normalization. Generally, majority of text does not require this normalization processing.If`true`, check if fully normalized and perform normaliztion to compare text.If`false`, does not check.The default value is`false`.See[http://userguide.icu-project.org/collation/concepts\#TOC-Normalization](http://userguide.icu-project.org/collation/concepts#TOC-Normalization)for details. |
 
-## Operations that Support Collation
+## 支持核对的操作
 
 You can specify collation for the following operations:
 
@@ -67,7 +67,7 @@ You cannot specify multiple collations for an operation. For example, you cannot
 |  | [`shardCollection`](https://docs.mongodb.com/manual/reference/command/shardCollection/#dbcmd.shardCollection) | [`sh.shardCollection()`](https://docs.mongodb.com/manual/reference/method/sh.shardCollection/#sh.shardCollection) |
 |  |  | Individual update, replace, and delete operations in[`db.collection.bulkWrite()`](https://docs.mongodb.com/manual/reference/method/db.collection.bulkWrite/#db.collection.bulkWrite). |
 
-## Behavior
+## 表现
 
 ### Local Variants
 
@@ -88,7 +88,7 @@ For a complete list of all collation locales and their variants, see[Collation L
 ### Collation and Views
 
 * You can specify a default
-  [collation](https://docs.mongodb.com/manual/reference/collation/#)
+  [collation](#)
   for a view at creation time. If no collation is specified, the view’s default collation is the “simple” binary comparison collator. That is, the view does not inherit the collection’s default collation.
 * String comparisons on the view use the view’s default collation. An operation that attempts to change or override a view’s default collation will fail with an error.
 * If creating a view from another view, you cannot specify a collation that differs from the source view’s collation.
@@ -97,7 +97,7 @@ For a complete list of all collation locales and their variants, see[Collation L
   or
   [`$graphLookup`](https://docs.mongodb.com/manual/reference/operator/aggregation/graphLookup/#pipe._S_graphLookup)
   , the views must have the same
-  [collation](https://docs.mongodb.com/manual/reference/collation/#)
+  [collation](#)
   .
 
 ### Collation and Index Use

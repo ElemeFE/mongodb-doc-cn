@@ -54,7 +54,7 @@
   * Explain Results
   * 系统集合
   * 连接字符串 URI 格式
-  * [核对](reference/db-cmd/he-dui.md)
+  * [核对](reference/collation.md)
   * [MongoDB 写协议](reference/write-protocol.md)
   * 日志消息
   * 退出码和状态
