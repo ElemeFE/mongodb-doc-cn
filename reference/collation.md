@@ -35,10 +35,10 @@ On this page
 
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| `locale` | string | The ICU locale. See [Supported Languages and Locales](https://docs.mongodb.com/manual/reference/collation-locales-defaults/#collation-languages-locales) for a list of supported locales.<br> To specify simple binary comparison, specify`locale`value of`"simple"`. |
+| `locale` | string | The ICU locale. See [Supported Languages and Locales](https://docs.mongodb.com/manual/reference/collation-locales-defaults/#collation-languages-locales) for a list of supported locales.<br> To specify simple binary comparison, specify `locale` value of `"simple"`. |
 | `strength` | integer | Optional. The level of comparison to perform. Corresponds to[ICU Comparison Levels](http://userguide.icu-project.org/collation/concepts#TOC-Comparison-Levels). Possible values are:ValueDescription1Primary level of comparison. Collation performs comparisons of the base characters only, ignoring other differences such as diacritics and case.2Secondary level of comparison. Collation performs comparisons up to secondary differences, such as diacritics. That is, collation performs comparisons of base characters \(primary differences\) and diacritics \(secondary differences\). Differences between base characters takes precedence over secondary differences.3Tertiary level of comparison. Collation performs comparisons up to tertiary differences, such as case and letter variants. That is, collation performs comparisons of base characters \(primary differences\), diacritics \(secondary differences\), and case and variants \(tertiary differences\). Differences between base characters takes precedence over secondary differences, which takes precedence over tertiary differences.This is the default level.4Quaternary Level. Limited for specific use case to consider punctuation when levels 1-3 ignore punctuation or for processing Japanese text.5Identical Level. Limited for specific use case of tie breaker.See[ICU Collation: Comparison Levels](http://userguide.icu-project.org/collation/concepts#TOC-Comparison-Levels)for details. |
-| `caseLevel` | boolean | Optional. Flag that determines whether to include case comparison at`strength`level`1`or`2`.If`true`, include case comparison; i.e.When used with`strength:1`, collation compares base characters and case.When used with`strength:2`, collation compares base characters, diacritics \(and possible other secondary differences\) and case.If`false`, do not include case comparison at level`1`or`2`. The default is`false`.For more information, see[ICU Collation: Case Level](http://userguide.icu-project.org/collation/concepts#TOC-CaseLevel). |
-| `caseFirst` | string | Optional. A flag that determines sort order of case differences during tertiary level comparisons.Possible values are:ValueDescription“upper”Uppercase sorts before lowercase.“lower”Lowercase sorts before uppercase.“off”Default value. Similar to`"lower"`with slight differences. See[http://userguide.icu-project.org/collation/customization](http://userguide.icu-project.org/collation/customization)for details of differences. |
+| `caseLevel` | boolean | Optional. Flag that determines whether to include case comparison at `strength` level `1` or`2`.If`true`, include case comparison; i.e.When used with`strength:1`, collation compares base characters and case.When used with`strength:2`, collation compares base characters, diacritics \(and possible other secondary differences\) and case.If`false`, do not include case comparison at level `1` or`2`. The default is`false`.For more information, see[ICU Collation: Case Level](http://userguide.icu-project.org/collation/concepts#TOC-CaseLevel). |
+| `caseFirst` | string | Optional. A flag that determines sort order of case differences during tertiary level comparisons.Possible values are:<br> ValueDescription“upper”Uppercase sorts before lowercase.“lower”Lowercase sorts before uppercase.“off”Default value. Similar to`"lower"`with slight differences. See[http://userguide.icu-project.org/collation/customization](http://userguide.icu-project.org/collation/customization)for details of differences. |
 | `numericOrdering` | boolean | Optional. Flag that determines whether to compare numeric strings as numbers or as strings.If`true`, compare as numbers; i.e.`"10"`is greater than`"2"`.If`false`, compare as strings; i.e.`"10"`is less than`"2"`.Default is`false`. |
 | `alternate` | string | Optional. Field that determines whether collation should consider whitespace and punctuation as base characters for purposes of comparison.Possible values are:ValueDescription`"non-ignorable"`Whitespace and punctuation are considered base characters.`"shifted"`Whitespace and punctuation are not considered base characters and are only distinguished at strength levels greater than 3.See[ICU Collation: Comparison Levels](http://userguide.icu-project.org/collation/concepts#TOC-Comparison-Levels)for more information.Default is`"non-ignorable"`. |
 | `maxVariable` | string | Optional. Field that determines up to which characters are considered ignorable when`alternate:"shifted"`. Has no effect if`alternate:"non-ignorable"`Possible values are:ValueDescription`"punct"`Both whitespaces and punctuation are “ignorable”, i.e. not considered base characters.`"space"`Whitespace are “ignorable”, i.e. not considered base characters. |
@@ -77,7 +77,7 @@ Some collation locales have variants, which employ special language-specific rul
 { "locale" : "<locale code>@collation=<variant>" }
 ```
 
-For example, to use the`pinyin`variant of the Chinese collation:
+For example, to use the `pinyin` variant of the Chinese collation:
 
 ```
 { "locale" : "zh@collation=pinyin" }
@@ -104,7 +104,7 @@ For a complete list of all collation locales and their variants, see[Collation L
 
 To use an index for string comparisons, an operation must also specify the same collation. That is, an index with a collation cannot support an operation that performs string comparisons on the indexed fields if the operation specifies a different collation.
 
-For example, the collection`myColl`has an index on a string field`category`with the collation locale`"fr"`.
+For example, the collection `myColl` has an index on a string field `category` with the collation locale`"fr"`.
 
 ```
 db.myColl.createIndex( { category: 1 }, { collation: { locale: "fr" } } )
@@ -124,7 +124,7 @@ db.myColl.find( { category: "cafe" } )
 
 For a compound index where the index prefix keys are not strings, arrays, and embedded documents, an operation that specifies a different collation can still use the index to support comparisons on the index prefix keys.
 
-For example, the collection`myColl`has a compound index on the numeric fields`score`and`price`and the string field`category`; the index is created with the collation locale`"fr"`for string comparisons:
+For example, the collection `myColl` has a compound index on the numeric fields `score` and `price` and the string field`category`; the index is created with the collation locale`"fr"`for string comparisons:
 
 ```
 db.myColl.createIndex(
@@ -139,7 +139,7 @@ db.myColl.find( { score: 5 } ).sort( { price: 1 } )
 db.myColl.find( { score: 5, price: { $gt: NumberDecimal( "10" ) } } ).sort( { price: 1 } )
 ```
 
-The following operation, which uses`"simple"`binary collation for string comparisons on the indexed`category`field, can use the index to fulfill only the`score:5`portion of the query:
+The following operation, which uses`"simple"`binary collation for string comparisons on the indexed `category` field, can use the index to fulfill only the`score:5`portion of the query:
 
 ```
 db.myColl.find( { score: 5, category: "cafe" } )
